@@ -28,7 +28,7 @@
 <meta property="og:image" content="https://aoijays.top/pic/%E5%8A%A8%E6%89%8B%E5%AD%A6%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/image-20240729015026158.png">
 <meta property="og:image" content="https://aoijays.top/pic/%E5%8A%A8%E6%89%8B%E5%AD%A6%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/image-20240729024621359.png">
 <meta property="article:published_time" content="2024-07-28T15:59:42.000Z">
-<meta property="article:modified_time" content="2024-07-28T19:01:44.231Z">
+<meta property="article:modified_time" content="2024-07-28T19:17:15.314Z">
 <meta property="article:author" content="BiribiriBird">
 <meta property="article:tag" content="动手学深度学习">
 <meta property="article:tag" content="深度学习">
@@ -300,7 +300,7 @@
 
                 <!-- 文章字数统计 -->
                     <div class="post-intro-read">
-                        <span>字数统计: <span class="post-count word-count">3.5k</span>阅读时长: <span class="post-count reading-time">16 min</span></span>
+                        <span>字数统计: <span class="post-count word-count">3.6k</span>阅读时长: <span class="post-count reading-time">16 min</span></span>
                     </div>
                 <div class="post-intro-meta">
                     <!-- 撰写日期 -->
@@ -525,45 +525,16 @@ for name, param in mynn.classfication.named_parameters():
 </ul>
 <h3><span id="读写文件">读写文件</span></h3>
 <ul>
-<li>
-<p>张量的保存</p>
+<li>张量的保存</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">x = torch.arange(<span class="number">12.</span>)</span><br><span class="line">torch.save(x, <span class="string">&#x27;x.temp&#x27;</span>)</span><br><span class="line">x2 = torch.load(<span class="string">&#x27;x.temp&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(x2)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 列表形式</span></span><br><span class="line">x,y,z = torch.arange(<span class="number">12.</span>),torch.arange(<span class="number">12.</span>),torch.arange(<span class="number">12.</span>)</span><br><span class="line">torch.save([x,y,z], <span class="string">&#x27;xyz.temp&#x27;</span>)</span><br><span class="line">x2,y2,z2 = torch.load(<span class="string">&#x27;xyz.temp&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(x2,y2,z2,sep=<span class="string">&#x27;\n&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 字典形式</span></span><br><span class="line">x,y,z = torch.arange(<span class="number">12.</span>),torch.arange(<span class="number">12.</span>),torch.arange(<span class="number">12.</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">dict</span> = &#123;</span><br><span class="line">    <span class="string">&#x27;x&#x27;</span>:x, <span class="string">&#x27;y&#x27;</span>:y, <span class="string">&#x27;z&#x27;</span>:z</span><br><span class="line">&#125;</span><br><span class="line">torch.save(<span class="built_in">dict</span>, <span class="string">&#x27;xyz.temp&#x27;</span>)</span><br><span class="line"></span><br><span class="line">res =  torch.load(<span class="string">&#x27;xyz.temp&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(res)</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">&#123;&#x27;x&#x27;: tensor([ 0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.,  8.,  9., 10., 11.]),</span></span><br><span class="line"><span class="string"> &#x27;y&#x27;: tensor([ 0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.,  8.,  9., 10., 11.]),</span></span><br><span class="line"><span class="string"> &#x27;z&#x27;: tensor([ 0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.,  8.,  9., 10., 11.])&#125;</span></span><br><span class="line"><span class="string"> &#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
 <ul>
 <li>
-<pre><code class="language-python">x = torch.arange(12.)
-torch.save(x, 'x.temp')
-x2 = torch.load('x.temp')
-print(x2)
-
-# 列表形式
-x,y,z = torch.arange(12.),torch.arange(12.),torch.arange(12.)
-torch.save([x,y,z], 'xyz.temp')
-x2,y2,z2 = torch.load('xyz.temp')
-print(x2,y2,z2,sep='\n')
-
-# 字典形式
-x,y,z = torch.arange(12.),torch.arange(12.),torch.arange(12.)
-
-dict = &#123;
-    'x':x, 'y':y, 'z':z
-&#125;
-torch.save(dict, 'xyz.temp')
-
-res =  torch.load('xyz.temp')
-print(res)
-'''
-&#123;'x': tensor([ 0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.,  8.,  9., 10., 11.]),
- 'y': tensor([ 0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.,  8.,  9., 10., 11.]),
- 'z': tensor([ 0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.,  8.,  9., 10., 11.])&#125;
- '''
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">-   模型参数保存</span><br><span class="line"></span><br><span class="line">    -   事实上已经知道如何保存字典了，模型参数能以字典存储</span><br><span class="line"></span><br><span class="line">    -   ```python</span><br><span class="line">        torch.save(mynn.state_dict(), &#x27;mynn.pth&#x27;) # 保存</span><br><span class="line">        new_model = Mynn()</span><br><span class="line">        new_model.load_state_dict(torch.load(&#x27;mynn.pth&#x27;)) # 加载</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-</code></pre>
-</li>
+<p>模型参数保存</p>
+<ul>
+<li>事实上已经知道如何保存字典了，模型参数能以字典存储</li>
 </ul>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">torch.save(mynn.state_dict(), <span class="string">&#x27;mynn.pth&#x27;</span>) <span class="comment"># 保存</span></span><br><span class="line">new_model = Mynn()</span><br><span class="line">new_model.load_state_dict(torch.load(<span class="string">&#x27;mynn.pth&#x27;</span>)) <span class="comment"># 加载</span></span><br></pre></td></tr></table></figure>
 </li>
 </ul>
 <h3><span id="gpu管理">GPU管理</span></h3>
@@ -777,7 +748,7 @@ print(res)
             <p>原文作者：<a href="https://aoijays.top">BiribiriBird</a>
             <p>原文链接：<a href="https://aoijays.top/2024/07/28/D2l-Part2/">https://aoijays.top/2024/07/28/D2l-Part2/</a>
             <p>发表日期：<a href="https://aoijays.top/2024/07/28/D2l-Part2/">July 28th 2024, 11:59:42 pm</a>
-            <p>更新日期：<a href="https://aoijays.top/2024/07/28/D2l-Part2/">July 29th 2024, 3:01:44 am</a>
+            <p>更新日期：<a href="https://aoijays.top/2024/07/28/D2l-Part2/">July 29th 2024, 3:17:15 am</a>
             <p>版权声明：本文采用<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
         </div>
     <!-- paginator -->
