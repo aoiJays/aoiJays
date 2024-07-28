@@ -10,19 +10,19 @@
     <meta name="copyright" content="BiribiriBird">
         <meta name="keywords" content="hexo,hexo-theme,hexo-blog,Neworld1111,AoiJays,BiribiriBird">
     <meta name="description" content="">
-    <meta name="description" content="cuda编程 · 零  蒙特卡洛的树 - Cuda编程Bilibili Github: Cuda_Learning  [TOC] 基本步骤 在进行运行之前，我们可以先查询一下设备中有多少块GPU 123int gpuCount &#x3D; -1;cudaGetDeviceCount(&amp;gpuCount);printf(&quot;%d &quot;, gpuCount); 然后可以设置成最后一块显">
+    <meta name="description" content="cuda编程 · 零  蒙特卡洛的树 - Cuda编程Bilibili Github: Cuda_Learning    基本步骤  GPU详细信息   Cuda项目建立 手写卷积 并行归约Parallel Reduction  交错寻址 连续地址   程序计时 原子操作  实例   共享内存  静态申请 动态申请   框架thrust 实例：估算圆周率 多个block的归约 多维矩阵 实例：手写">
 <meta property="og:type" content="article">
 <meta property="og:title" content="CUDA编程0基础入门笔记">
 <meta property="og:url" content="https://aoijays.top/2024/05/26/cuda-zero-2024-5/index.html">
 <meta property="og:site_name" content="BiribiriBird&#39;s Gallery">
-<meta property="og:description" content="cuda编程 · 零  蒙特卡洛的树 - Cuda编程Bilibili Github: Cuda_Learning  [TOC] 基本步骤 在进行运行之前，我们可以先查询一下设备中有多少块GPU 123int gpuCount &#x3D; -1;cudaGetDeviceCount(&amp;gpuCount);printf(&quot;%d &quot;, gpuCount); 然后可以设置成最后一块显">
+<meta property="og:description" content="cuda编程 · 零  蒙特卡洛的树 - Cuda编程Bilibili Github: Cuda_Learning    基本步骤  GPU详细信息   Cuda项目建立 手写卷积 并行归约Parallel Reduction  交错寻址 连续地址   程序计时 原子操作  实例   共享内存  静态申请 动态申请   框架thrust 实例：估算圆周率 多个block的归约 多维矩阵 实例：手写">
 <meta property="og:locale">
 <meta property="og:image" content="https://aoijays.top/pic/cuda-zero-2024-5/image-20240402123917253.png">
 <meta property="og:image" content="https://aoijays.top/pic/cuda-zero-2024-5/image-20240402124057146.png">
 <meta property="og:image" content="https://aoijays.top/pic/cuda-zero-2024-5/image-20240405022231427.png">
 <meta property="og:image" content="https://aoijays.top/pic/cuda-zero-2024-5/image-20240405023017938.png">
 <meta property="article:published_time" content="2024-05-26T09:18:35.000Z">
-<meta property="article:modified_time" content="2024-07-26T09:30:12.760Z">
+<meta property="article:modified_time" content="2024-07-28T07:53:00.746Z">
 <meta property="article:author" content="BiribiriBird">
 <meta property="article:tag" content="cuda">
 <meta name="twitter:card" content="summary">
@@ -292,7 +292,7 @@
 
                 <!-- 文章字数统计 -->
                     <div class="post-intro-read">
-                        <span>字数统计: <span class="post-count word-count">2.4k</span>阅读时长: <span class="post-count reading-time">10 min</span></span>
+                        <span>字数统计: <span class="post-count word-count">2.5k</span>阅读时长: <span class="post-count reading-time">10 min</span></span>
                     </div>
                 <div class="post-intro-meta">
                     <!-- 撰写日期 -->
@@ -449,13 +449,46 @@
             <div class="container container-unloaded">
                 <main class="main post-page">
     <article class="article-entry">
-        <h1 id="cuda编程-零">cuda编程 · 零</h1>
+        <h1><span id="cuda编程-零">cuda编程 · 零</span></h1>
 <blockquote>
 <p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV17K411K76C/">蒙特卡洛的树 - Cuda编程Bilibili</a></p>
 <p><a target="_blank" rel="noopener" href="https://github.com/keefeWu/cuda_learning">Github: Cuda_Learning</a></p>
 </blockquote>
-<p>[TOC]</p>
-<h2 id="基本步骤">基本步骤</h2>
+<!-- toc -->
+<ul>
+<li><a href="#%E5%9F%BA%E6%9C%AC%E6%AD%A5%E9%AA%A4">基本步骤</a>
+<ul>
+<li><a href="#gpu%E8%AF%A6%E7%BB%86%E4%BF%A1%E6%81%AF">GPU详细信息</a></li>
+</ul>
+</li>
+<li><a href="#cuda%E9%A1%B9%E7%9B%AE%E5%BB%BA%E7%AB%8B">Cuda项目建立</a></li>
+<li><a href="#%E6%89%8B%E5%86%99%E5%8D%B7%E7%A7%AF">手写卷积</a></li>
+<li><a href="#%E5%B9%B6%E8%A1%8C%E5%BD%92%E7%BA%A6parallel-reduction">并行归约Parallel Reduction</a>
+<ul>
+<li><a href="#%E4%BA%A4%E9%94%99%E5%AF%BB%E5%9D%80">交错寻址</a></li>
+<li><a href="#%E8%BF%9E%E7%BB%AD%E5%9C%B0%E5%9D%80">连续地址</a></li>
+</ul>
+</li>
+<li><a href="#%E7%A8%8B%E5%BA%8F%E8%AE%A1%E6%97%B6">程序计时</a></li>
+<li><a href="#%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C">原子操作</a>
+<ul>
+<li><a href="#%E5%AE%9E%E4%BE%8B">实例</a></li>
+</ul>
+</li>
+<li><a href="#%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98">共享内存</a>
+<ul>
+<li><a href="#%E9%9D%99%E6%80%81%E7%94%B3%E8%AF%B7">静态申请</a></li>
+<li><a href="#%E5%8A%A8%E6%80%81%E7%94%B3%E8%AF%B7">动态申请</a></li>
+</ul>
+</li>
+<li><a href="#%E6%A1%86%E6%9E%B6thrust">框架thrust</a></li>
+<li><a href="#%E5%AE%9E%E4%BE%8B%E4%BC%B0%E7%AE%97%E5%9C%86%E5%91%A8%E7%8E%87">实例：估算圆周率</a></li>
+<li><a href="#%E5%A4%9A%E4%B8%AAblock%E7%9A%84%E5%BD%92%E7%BA%A6">多个block的归约</a></li>
+<li><a href="#%E5%A4%9A%E7%BB%B4%E7%9F%A9%E9%98%B5">多维矩阵</a></li>
+<li><a href="#%E5%AE%9E%E4%BE%8B%E6%89%8B%E5%86%99%E5%85%A8%E5%8A%A0%E5%99%A8">实例：手写全加器</a></li>
+</ul>
+<!-- tocstop -->
+<h2><span id="基本步骤">基本步骤</span></h2>
 <p>在进行运行之前，我们可以先查询一下设备中有多少块GPU</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> gpuCount = <span class="number">-1</span>;</span><br><span class="line"><span class="built_in">cudaGetDeviceCount</span>(&amp;gpuCount);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;%d &quot;</span>, gpuCount);</span><br></pre></td></tr></table></figure>
 <p>然后可以设置成最后一块显卡的ID</p>
@@ -464,36 +497,36 @@
 <p>当设置不存在的设备编号时，默认启动0号gpu</p>
 <p>基本步骤如下：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cuda_runtime_api.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function">__global__ <span class="type">void</span> <span class="title">kernel</span><span class="params">(<span class="type">float</span> *a)</span> </span>&#123;</span><br><span class="line">    a[threadIdx.x] = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> ** argv)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> gpuCount = <span class="number">-1</span>;</span><br><span class="line">    <span class="built_in">cudaGetDeviceCount</span>(&amp;gpuCount);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;gpuCount = %d\n&quot;</span>, gpuCount);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 1. 指定GPU设别</span></span><br><span class="line">    <span class="comment">// 单GPU设备其实可以省略此步骤</span></span><br><span class="line">    <span class="built_in">cudaSetDevice</span>(gpuCount - <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> devideId = <span class="number">-1</span>;</span><br><span class="line">    <span class="built_in">cudaGetDevice</span>(&amp;devideId);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;gpu = %d\n&quot;</span>, devideId);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. 分配显存空间</span></span><br><span class="line">    <span class="type">float</span> *aGPU;</span><br><span class="line">    <span class="comment">// cudaError_t cudaMalloc(void **devPtr, size_t size);</span></span><br><span class="line">    <span class="comment">// void **devPtr 指向待分配内存空间指针的指针 </span></span><br><span class="line">    <span class="comment">// 		指针是通用的设备指针，可以指向任何类型的内存</span></span><br><span class="line">    <span class="comment">// size_t size 分配的内存大小</span></span><br><span class="line">    <span class="built_in">cudaMalloc</span>((<span class="type">void</span>**)&amp;aGPU, <span class="number">16</span> * <span class="built_in">sizeof</span>(<span class="type">float</span>));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3. 分配内存空间</span></span><br><span class="line">    <span class="type">float</span> a[<span class="number">16</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 4. 内存-&gt;显存</span></span><br><span class="line">    <span class="comment">// cudaError_t cudaMemcpy(void* dst, const void* src, size_t count, cudaMemcpyKind kind)</span></span><br><span class="line">    <span class="comment">// 目的地址, 源地址，需要复制的字节数量， 复制类型</span></span><br><span class="line">        <span class="comment">//  cudaMemcpyHostToHost：从主机到主机的内存复制。</span></span><br><span class="line">        <span class="comment">//  cudaMemcpyHostToDevice：从主机到设备的内存复制。</span></span><br><span class="line">        <span class="comment">//  cudaMemcpyDeviceToHost：从设备到主机的内存复制。</span></span><br><span class="line">        <span class="comment">//  cudaMemcpyDeviceToDevice：从设备到设备的内存复制。</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">cudaMemcpy</span>(aGPU, a, <span class="number">16</span> * <span class="built_in">sizeof</span>(<span class="type">float</span>), cudaMemcpyHostToDevice);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 5. 设备代码</span></span><br><span class="line">    kernel&lt;&lt;&lt;<span class="number">1</span>, <span class="number">16</span>&gt;&gt;&gt;(aGPU);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 6. 显存-&gt;内存</span></span><br><span class="line">    <span class="built_in">cudaMemcpy</span>(a, aGPU, <span class="number">16</span> * <span class="built_in">sizeof</span>(<span class="type">float</span>), cudaMemcpyDeviceToHost);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">0</span>;i&lt;<span class="number">16</span>;++i)</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%.2lf &quot;</span>, a[i]);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 7. 释放</span></span><br><span class="line">    <span class="built_in">cudaFree</span>(aGPU); <span class="comment">// 释放申请的显存</span></span><br><span class="line">    <span class="built_in">cudaDeviceReset</span>(); <span class="comment">// 重置设备</span></span><br><span class="line">    <span class="comment">// 如果主机内存也有申请 也需要释放</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="gpu详细信息">GPU详细信息</h4>
+<h4><span id="gpu详细信息">GPU详细信息</span></h4>
 <p><code>cudaDeviceProp</code>是cuda封装的一个显卡信息结构体</p>
 <p>我们可以通过这个结构体查看显卡信息</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">cudaDeviceProp prop;</span><br><span class="line"><span class="comment">// 指定0号显卡</span></span><br><span class="line"><span class="built_in">cudaGetDeviceProperties</span>(&amp;prop, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;maxThreadsPerBLOCK: %d\n&quot;</span>, prop.maxThreadsPerBlock);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;maxThreadsDim: %d\n&quot;</span>, prop.maxThreadsDim[<span class="number">0</span>]);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;maxGridSize: %d\n&quot;</span>, prop.maxGridSize[<span class="number">0</span>]);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;totalConstMem: %d\n&quot;</span>, prop.totalConstMem);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;clockRate: %d\n&quot;</span>, prop.clockRate);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;integrated: %d\n&quot;</span>, prop.integrated);    </span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <p>还有一些别的东西</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 程序可以在多个 CUDA 设备上运行时，可以使用这个函数来选择一个最合适的设备 device会变成被选中的设备编号 </span></span><br><span class="line"><span class="comment">// prop需要填写需求 自动匹配符合要求的设备</span></span><br><span class="line"><span class="function">cudaError_t <span class="title">cudaChooseDevice</span><span class="params">(<span class="type">int</span>* device, <span class="type">const</span> cudaDeviceProp* prop)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="comment">// 传入一个编号数组和数组长度</span></span></span><br><span class="line"><span class="function"><span class="comment">// 只有编号在其中的设备会是有效设备</span></span></span><br><span class="line"><span class="function">cudaError_t <span class="title">cudaSetValidDevices</span><span class="params">(<span class="type">int</span> *device_arr, <span class="type">int</span> len)</span></span>;</span><br></pre></td></tr></table></figure>
-<h2 id="cuda项目建立">Cuda项目建立</h2>
+<h2><span id="cuda项目建立">Cuda项目建立</span></h2>
 <p>建立项目文件夹，新建<code>CMakeLists.txt</code></p>
 <figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">cmake_minimum_required</span>(VERSION <span class="number">3.22</span>)</span><br><span class="line"><span class="keyword">project</span>(app LANGUAGES CUDA CXX)</span><br><span class="line"><span class="keyword">find_package</span>(CUDA REQUIRED)</span><br><span class="line">CUDA_ADD_EXECUTABLE(app main.cu)</span><br><span class="line"><span class="keyword">TARGET_LINK_LIBRARIES</span>(app)</span><br></pre></td></tr></table></figure>
 <p>在同文件夹下建立一个<code>main.cu</code></p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cuda_runtime_api.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function">__global__ <span class="type">void</span> <span class="title">add</span><span class="params">(<span class="type">int</span> *a, <span class="type">int</span> *b, <span class="type">int</span> *c, <span class="type">int</span> num)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> ( threadIdx.x &lt; num ) </span><br><span class="line">		c[threadIdx.x] = a[threadIdx.x] + b[threadIdx.x];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> ** argv)</span> </span>&#123;</span><br><span class="line">	</span><br><span class="line">	<span class="type">int</span> num = <span class="number">10</span>;</span><br><span class="line">	<span class="type">int</span> a[num], b[num], c[num];</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">0</span>;i&lt;num;++i) a[i] = i;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">0</span>;i&lt;num;++i) b[i] = i * i;</span><br><span class="line"></span><br><span class="line">	<span class="type">int</span> *agpu, *bgpu, *cgpu;</span><br><span class="line">	</span><br><span class="line">	<span class="built_in">cudaMalloc</span>((<span class="type">void</span>**)&amp;agpu, num * <span class="built_in">sizeof</span>(<span class="type">int</span>));</span><br><span class="line">	<span class="built_in">cudaMalloc</span>((<span class="type">void</span>**)&amp;bgpu, num * <span class="built_in">sizeof</span>(<span class="type">int</span>));</span><br><span class="line">	<span class="built_in">cudaMalloc</span>((<span class="type">void</span>**)&amp;cgpu, num * <span class="built_in">sizeof</span>(<span class="type">int</span>));</span><br><span class="line"></span><br><span class="line">	<span class="built_in">cudaMemcpy</span>(agpu, a, num * <span class="built_in">sizeof</span>(<span class="type">int</span>), cudaMemcpyHostToDevice);</span><br><span class="line">	<span class="built_in">cudaMemcpy</span>(bgpu, b, num * <span class="built_in">sizeof</span>(<span class="type">int</span>), cudaMemcpyHostToDevice);</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 加法</span></span><br><span class="line">	add&lt;&lt;&lt;<span class="number">1</span>, <span class="number">10</span>&gt;&gt;&gt;(agpu, bgpu, cgpu, num);</span><br><span class="line">	<span class="built_in">cudaMemcpy</span>(c, cgpu, num * <span class="built_in">sizeof</span>(<span class="type">int</span>), cudaMemcpyDeviceToHost);</span><br><span class="line">	</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;add:\n&quot;</span>);</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">0</span>;i&lt;num;++i) <span class="built_in">printf</span>(<span class="string">&quot;%d + %d = %d\n&quot;</span>, a[i], b[i], c[i]);</span><br><span class="line"></span><br><span class="line">	<span class="built_in">cudaFree</span>(agpu); </span><br><span class="line">	<span class="built_in">cudaFree</span>(bgpu); </span><br><span class="line">	<span class="built_in">cudaFree</span>(cgpu); </span><br><span class="line">    <span class="built_in">cudaDeviceReset</span>(); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>新建<code>build</code>文件夹</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> buid &amp;&amp; <span class="built_in">cd</span> build</span><br><span class="line">cmake ..</span><br><span class="line">make -j3</span><br><span class="line">./app</span><br></pre></td></tr></table></figure>
-<h2 id="手写卷积">手写卷积</h2>
+<h2><span id="手写卷积">手写卷积</span></h2>
 <p>什么是卷积？<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Vd4y1e7pj">【官方双语】那么……什么是卷积？</a></p>
 <p>首先需要添加一个新的东西：<code>CUDA_CHECK</code></p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> CUDA_CHECK(call) \</span></span><br><span class="line"><span class="meta">do &#123; \</span></span><br><span class="line"><span class="meta">    cudaError_t err = call; \</span></span><br><span class="line"><span class="meta">    <span class="keyword">if</span> (err != cudaSuccess) &#123; \</span></span><br><span class="line"><span class="meta">        fprintf(stderr, <span class="string">&quot;CUDA error at %s:%d code=%d(%s) \&quot;%s\&quot;\n&quot;</span>, \</span></span><br><span class="line"><span class="meta">                __FILE__, __LINE__, err, cudaGetErrorString(err), #call); \</span></span><br><span class="line"><span class="meta">        exit(EXIT_FAILURE); \</span></span><br><span class="line"><span class="meta">    &#125; \</span></span><br><span class="line"><span class="meta">&#125; while (0)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 后续我们使用Cuda函数时 用宏进行包装</span></span><br><span class="line"><span class="comment">// 即可及时报错</span></span><br><span class="line"><span class="built_in">CUDA_CHECK</span>(<span class="built_in">cudaMalloc</span>(&amp;devPtr, size));</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <p>code见<code>code/src/code_2.cu</code></p>
-<h2 id="并行归约parallel-reduction">并行归约Parallel Reduction</h2>
+<h2><span id="并行归约parallel-reduction">并行归约Parallel Reduction</span></h2>
 <blockquote>
 <p>我们需要对一个数组进行并行算法的求和</p>
 </blockquote>
-<h3 id="交错寻址">交错寻址</h3>
+<h3><span id="交错寻址">交错寻址</span></h3>
 <p><img src="/pic/cuda-zero-2024-5/image-20240402123917253.png" alt="image-20240402123917253"></p>
 <p>两两求和，逐渐合并</p>
 <p>但是这样寻址速度较慢</p>
-<h3 id="连续地址">连续地址</h3>
+<h3><span id="连续地址">连续地址</span></h3>
 <p><img src="/pic/cuda-zero-2024-5/image-20240402124057146.png" alt="image-20240402124057146"></p>
 <p>code见<code>code/src/code_3.cu</code></p>
-<h2 id="程序计时">程序计时</h2>
+<h2><span id="程序计时">程序计时</span></h2>
 <p>推荐使用</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/time.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">struct</span> <span class="title class_">timeval</span> startTime, endTime;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 获取开始时间</span></span><br><span class="line">    <span class="built_in">gettimeofday</span>(&amp;startTime, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 执行一些操作</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取结束时间</span></span><br><span class="line">    <span class="built_in">gettimeofday</span>(&amp;endTime, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 计算时间差</span></span><br><span class="line">    <span class="type">long</span> <span class="type">long</span> elapsedTime = (endTime.tv_sec - startTime.tv_sec) * <span class="number">1000000LL</span> + (endTime.tv_usec - startTime.tv_usec);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Elapsed time: %lld microseconds\n&quot;</span>, elapsedTime);</span><br></pre></td></tr></table></figure>
 <p>其中，<code>sys/time.h</code> 是一个 C 标准库头文件，通常用于在 POSIX 操作系统中进行时间操作，因此在 POSIX 兼容的操作系统上使用时通常是可用的，比如 Linux 和 macOS 等。</p>
@@ -502,7 +535,7 @@
 <p>并且我们发现，我们一个block一次计算，和一个thread一次计算</p>
 <p>效率基本一致</p>
 <p>并且放在thread可以共享内存，所以推荐放在thread里</p>
-<h2 id="原子操作">原子操作</h2>
+<h2><span id="原子操作">原子操作</span></h2>
 <p>原子操作是一种<strong>不可分割</strong>的操作，它要么完全执行，要么完全不执行，没有中间状态。</p>
 <p>在并发编程中，原子操作是一种<strong>确保多个线程或进程安全访问共享资源</strong>的机制。</p>
 <p>原子操作能够保证在多线程环境下不会出现数据竞争的情况，从而确保数据的一致性和正确性。</p>
@@ -516,7 +549,7 @@
 <p>银行转账，当钱被转出时若发生中断，则此时钱就少了</p>
 <p>因此转出和转入必须完整执行完毕</p>
 </blockquote>
-<h3 id="实例">实例</h3>
+<h3><span id="实例">实例</span></h3>
 <blockquote>
 <p>统计每种数字出现多少次</p>
 </blockquote>
@@ -526,13 +559,13 @@
 <p>会造成值操作的覆盖</p>
 <p>因此引入了<code>atomicAdd()</code>，自动为数据上锁，在完成一次加法之间，不允许被其他thread使用</p>
 <p>code见<code>code/src/code_5.cu</code></p>
-<h2 id="共享内存">共享内存</h2>
+<h2><span id="共享内存">共享内存</span></h2>
 <p>使用<code>__shared__</code>进行声明</p>
 <p>同属于一个block的thread共享一个共享内存</p>
-<h3 id="静态申请">静态申请</h3>
+<h3><span id="静态申请">静态申请</span></h3>
 <p>如果我们一开始就确定要开多少共享内存数组</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">__shared__ <span class="type">int</span> s[<span class="number">64</span>];</span><br><span class="line">__shared__ <span class="type">int</span> s[N]; <span class="comment">// N is constexpr</span></span><br></pre></td></tr></table></figure>
-<h3 id="动态申请">动态申请</h3>
+<h3><span id="动态申请">动态申请</span></h3>
 <p>在核函数指定第三个执行配置参数，数值为需要申请的<strong>每个块</strong>动态共享内存大小</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dynamicReverse&lt;&lt;&lt;<span class="number">1</span>, n, <span class="function">n*<span class="title">sizeof</span><span class="params">(<span class="type">int</span>)</span>&gt;&gt;&gt;<span class="params">()</span></span>;</span><br></pre></td></tr></table></figure>
 <p>在核函数内</p>
@@ -542,16 +575,16 @@
 <p>申请的数值即为所有数组大小之和</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">extern</span> __shared__ <span class="type">int</span> s[];</span><br><span class="line"><span class="type">int</span> *integerData = s;                        <span class="comment">// nI ints</span></span><br><span class="line"><span class="type">float</span> *floatData = (<span class="type">float</span>*)&amp;integerData[nI]; <span class="comment">// nF floats</span></span><br><span class="line"><span class="type">char</span> *charData = (<span class="type">char</span>*)&amp;floatData[nF];      <span class="comment">// nC chars</span></span><br></pre></td></tr></table></figure>
 <p>手动切割数组即可</p>
-<h2 id="框架thrust">框架thrust</h2>
+<h2><span id="框架thrust">框架thrust</span></h2>
 <blockquote>
 <p>cuda版本的STL</p>
 </blockquote>
 <p>官方地址：<a target="_blank" rel="noopener" href="https://github.com/NVIDIA/thrust">https://github.com/NVIDIA/thrust</a></p>
 <p>记录几个比较简单的例子</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;thrust/host_vector.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;thrust/device_vector.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// 在主机内存中申请 大小为10的vector</span></span><br><span class="line">	<span class="function">thrust::host_vector&lt;<span class="type">int</span> &gt; <span class="title">a</span><span class="params">(<span class="number">10</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">auto</span> &amp; e : a) std::cin &gt;&gt; e;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">auto</span> &amp; e : a) std::cout &lt;&lt; e &lt;&lt;<span class="string">&quot; &quot;</span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 基本和std::vector没什么差别</span></span><br></pre></td></tr></table></figure>
-<h2 id="实例：估算圆周率">实例：估算圆周率</h2>
+<h2><span id="实例估算圆周率">实例：估算圆周率</span></h2>
 <p>code见<code>code/src/code_6.cu</code></p>
-<h2 id="多个block的归约">多个block的归约</h2>
+<h2><span id="多个block的归约">多个block的归约</span></h2>
 <p>例如我们要进行一个数组求和，但是数组元素个数远远多于线程</p>
 <p>一个block的线程数量有限，一般是1024（看具体设备）</p>
 <p>因此我们需要让多个block进行归约</p>
@@ -564,12 +597,12 @@
 <li>数量不会很多的情况下直接CPU计算，节省硬件传输</li>
 </ul>
 <p>code见<code>code/src/code_7.cu</code></p>
-<h2 id="多维矩阵">多维矩阵</h2>
+<h2><span id="多维矩阵">多维矩阵</span></h2>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">	<span class="type">size_t</span> width = <span class="number">120</span>, height = <span class="number">10</span>;</span><br><span class="line">    <span class="type">float</span> * a_gpu; <span class="type">size_t</span> pitch;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">cudaMallocPitch</span>((<span class="type">void</span>**)&amp;a_gpu, &amp;pitch, width*<span class="built_in">sizeof</span>(<span class="type">float</span>), height );</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;real = %zu\npitch = %zu&quot;</span>, width*<span class="built_in">sizeof</span>(<span class="type">float</span>), pitch);</span><br><span class="line">    <span class="built_in">cudaFree</span>(a_gpu);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 当width*sizeof(float)&lt;=512时 pitch=512</span></span><br><span class="line"><span class="comment">// 超过512 pitch取最小的512的倍数</span></span><br></pre></td></tr></table></figure>
 <p>内存对齐，使得访问效率更高</p>
 <p>但是我们一行该放多少放多少，剩下的空间直接忽略</p>
 <p>暂时先不研究这个，感觉用处不大</p>
-<h2 id="实例：手写全加器">实例：手写全加器</h2>
+<h2><span id="实例手写全加器">实例：手写全加器</span></h2>
 <p>对于串行加法器</p>
 <p><img src="/pic/cuda-zero-2024-5/image-20240405022231427.png" alt="image-20240405022231427"></p>
 <p>高位计算需要等待低位的进位</p>
@@ -594,7 +627,7 @@
             <p>原文作者：<a href="https://aoijays.top">BiribiriBird</a>
             <p>原文链接：<a href="https://aoijays.top/2024/05/26/cuda-zero-2024-5/">https://aoijays.top/2024/05/26/cuda-zero-2024-5/</a>
             <p>发表日期：<a href="https://aoijays.top/2024/05/26/cuda-zero-2024-5/">May 26th 2024, 5:18:35 pm</a>
-            <p>更新日期：<a href="https://aoijays.top/2024/05/26/cuda-zero-2024-5/">July 26th 2024, 5:30:12 pm</a>
+            <p>更新日期：<a href="https://aoijays.top/2024/05/26/cuda-zero-2024-5/">July 28th 2024, 3:53:00 pm</a>
             <p>版权声明：本文采用<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
         </div>
     <!-- paginator -->
@@ -663,7 +696,7 @@
                 <div class="toc-catalog">
                     <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
                 </div>
-                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#cuda%E7%BC%96%E7%A8%8B-%E9%9B%B6"><span class="toc-number">1.</span> <span class="toc-text">cuda编程 · 零</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%AD%A5%E9%AA%A4"><span class="toc-number">1.1.</span> <span class="toc-text">基本步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#gpu%E8%AF%A6%E7%BB%86%E4%BF%A1%E6%81%AF"><span class="toc-number">1.1.0.1.</span> <span class="toc-text">GPU详细信息</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cuda%E9%A1%B9%E7%9B%AE%E5%BB%BA%E7%AB%8B"><span class="toc-number">1.2.</span> <span class="toc-text">Cuda项目建立</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%8B%E5%86%99%E5%8D%B7%E7%A7%AF"><span class="toc-number">1.3.</span> <span class="toc-text">手写卷积</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B9%B6%E8%A1%8C%E5%BD%92%E7%BA%A6parallel-reduction"><span class="toc-number">1.4.</span> <span class="toc-text">并行归约Parallel Reduction</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%A4%E9%94%99%E5%AF%BB%E5%9D%80"><span class="toc-number">1.4.1.</span> <span class="toc-text">交错寻址</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9E%E7%BB%AD%E5%9C%B0%E5%9D%80"><span class="toc-number">1.4.2.</span> <span class="toc-text">连续地址</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A8%8B%E5%BA%8F%E8%AE%A1%E6%97%B6"><span class="toc-number">1.5.</span> <span class="toc-text">程序计时</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C"><span class="toc-number">1.6.</span> <span class="toc-text">原子操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E4%BE%8B"><span class="toc-number">1.6.1.</span> <span class="toc-text">实例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98"><span class="toc-number">1.7.</span> <span class="toc-text">共享内存</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%99%E6%80%81%E7%94%B3%E8%AF%B7"><span class="toc-number">1.7.1.</span> <span class="toc-text">静态申请</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E7%94%B3%E8%AF%B7"><span class="toc-number">1.7.2.</span> <span class="toc-text">动态申请</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A1%86%E6%9E%B6thrust"><span class="toc-number">1.8.</span> <span class="toc-text">框架thrust</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E4%BE%8B%EF%BC%9A%E4%BC%B0%E7%AE%97%E5%9C%86%E5%91%A8%E7%8E%87"><span class="toc-number">1.9.</span> <span class="toc-text">实例：估算圆周率</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%9A%E4%B8%AAblock%E7%9A%84%E5%BD%92%E7%BA%A6"><span class="toc-number">1.10.</span> <span class="toc-text">多个block的归约</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%9A%E7%BB%B4%E7%9F%A9%E9%98%B5"><span class="toc-number">1.11.</span> <span class="toc-text">多维矩阵</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E4%BE%8B%EF%BC%9A%E6%89%8B%E5%86%99%E5%85%A8%E5%8A%A0%E5%99%A8"><span class="toc-number">1.12.</span> <span class="toc-text">实例：手写全加器</span></a></li></ol></li></ol>
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">cuda编程 · 零</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.1.</span> <span class="toc-text">基本步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">1.1.0.1.</span> <span class="toc-text">GPU详细信息</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.2.</span> <span class="toc-text">Cuda项目建立</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.3.</span> <span class="toc-text">手写卷积</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.4.</span> <span class="toc-text">并行归约Parallel Reduction</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">1.4.1.</span> <span class="toc-text">交错寻址</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">1.4.2.</span> <span class="toc-text">连续地址</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.5.</span> <span class="toc-text">程序计时</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.6.</span> <span class="toc-text">原子操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">1.6.1.</span> <span class="toc-text">实例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.7.</span> <span class="toc-text">共享内存</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">1.7.1.</span> <span class="toc-text">静态申请</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">1.7.2.</span> <span class="toc-text">动态申请</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.8.</span> <span class="toc-text">框架thrust</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.9.</span> <span class="toc-text">实例：估算圆周率</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.10.</span> <span class="toc-text">多个block的归约</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.11.</span> <span class="toc-text">多维矩阵</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.12.</span> <span class="toc-text">实例：手写全加器</span></a></li></ol></li></ol>
             </div>
         <!-- sidebar -->
         <div class="sidebar sidebar-hide">
@@ -701,8 +734,8 @@
             <a class="archive-post-title" href="/2024/07/27/Lee-ML-L2/">李宏毅机器学习L2 · What to do if my network fails to train</a>
         </li>
         <li class="archive-post-item">
-            <span class="archive-post-date">07/26</span>
-            <a class="archive-post-title" href="/2024/07/26/D2l-Part1/">动手学深度学习 · Part1 深度学习基础</a>
+            <span class="archive-post-date">07/25</span>
+            <a class="archive-post-title" href="/2024/07/25/D2l-Part1/">动手学深度学习 · Part1 深度学习基础</a>
         </li>
         <li class="archive-post-item">
             <span class="archive-post-date">07/21</span>
