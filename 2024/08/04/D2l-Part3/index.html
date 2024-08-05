@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <!-- title -->
+<!-- keywords -->
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="author" content="BiribiriBird">
+    <meta name="renderer" content="webkit">
+    <meta name="copyright" content="BiribiriBird">
+        <meta name="keywords" content="hexo,hexo-theme,hexo-blog,Neworld1111,AoiJays,BiribiriBird">
+    <meta name="description" content="">
+    <meta name="description" content="计算机视觉  动手学深度学习v2 - https:&#x2F;&#x2F;www.bilibili.com&#x2F;video&#x2F;BV18p4y1h7Dr 个人评价是需要有一点基础  Pytorch 小土堆 先把Pytorch基础看一下 李宏毅2022春机器学习  理论部分更推荐李宏毅或者吴恩达，会更好理解 我的策略是理论在李宏毅这里补，作业不做，在李沐这里实操一下代码    本文不会放太多理论的东西 记录一下代码实操即可 理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="动手学深度学习 · Part3 计算机视觉">
+<meta property="og:url" content="https://aoijays.top/2024/08/04/D2l-Part3/index.html">
+<meta property="og:site_name" content="BiribiriBird&#39;s Gallery">
+<meta property="og:description" content="计算机视觉  动手学深度学习v2 - https:&#x2F;&#x2F;www.bilibili.com&#x2F;video&#x2F;BV18p4y1h7Dr 个人评价是需要有一点基础  Pytorch 小土堆 先把Pytorch基础看一下 李宏毅2022春机器学习  理论部分更推荐李宏毅或者吴恩达，会更好理解 我的策略是理论在李宏毅这里补，作业不做，在李沐这里实操一下代码    本文不会放太多理论的东西 记录一下代码实操即可 理">
+<meta property="og:locale">
+<meta property="og:image" content="https://aoijays.top/pic/%E5%8A%A8%E6%89%8B%E5%AD%A6%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/image-20240730015052703.png">
+<meta property="og:image" content="https://aoijays.top/pic/%E5%8A%A8%E6%89%8B%E5%AD%A6%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/image-20240731160505363.png">
+<meta property="og:image" content="https://aoijays.top/pic/%E5%8A%A8%E6%89%8B%E5%AD%A6%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/image-20240731160527491.png">
+<meta property="og:image" content="https://aoijays.top/pic/%E5%8A%A8%E6%89%8B%E5%AD%A6%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/image-20240731160602118.png">
+<meta property="og:image" content="https://aoijays.top/pic/%E5%8A%A8%E6%89%8B%E5%AD%A6%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/image-20240731162415552.png">
+<meta property="og:image" content="https://aoijays.top/pic/%E5%8A%A8%E6%89%8B%E5%AD%A6%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/image-20240731162751133.png">
+<meta property="og:image" content="https://aoijays.top/pic/%E5%8A%A8%E6%89%8B%E5%AD%A6%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/image-20240803011705068.png">
+<meta property="og:image" content="https://aoijays.top/pic/%E5%8A%A8%E6%89%8B%E5%AD%A6%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/image-20240803180830793-1722679711501-1.png">
+<meta property="og:image" content="https://aoijays.top/pic/%E5%8A%A8%E6%89%8B%E5%AD%A6%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/image-20240803181209447.png">
+<meta property="og:image" content="https://aoijays.top/pic/%E5%8A%A8%E6%89%8B%E5%AD%A6%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/image-20240803213048489.png">
+<meta property="og:image" content="https://aoijays.top/pic/%E5%8A%A8%E6%89%8B%E5%AD%A6%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/image-20240803214342417.png">
+<meta property="og:image" content="https://aoijays.top/pic/%E5%8A%A8%E6%89%8B%E5%AD%A6%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/image-20240804013133662.png">
+<meta property="og:image" content="https://aoijays.top/pic/%E5%8A%A8%E6%89%8B%E5%AD%A6%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/image-20240804014137552.png">
+<meta property="og:image" content="https://aoijays.top/pic/%E5%8A%A8%E6%89%8B%E5%AD%A6%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/image-20240804014532467.png">
+<meta property="og:image" content="https://aoijays.top/pic/%E5%8A%A8%E6%89%8B%E5%AD%A6%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/image-20240805223833384.png">
+<meta property="og:image" content="https://aoijays.top/pic/%E5%8A%A8%E6%89%8B%E5%AD%A6%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/image-20240806000358739.png">
+<meta property="og:image" content="https://aoijays.top/pic/%E5%8A%A8%E6%89%8B%E5%AD%A6%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/image-20240806000450103.png">
+<meta property="og:image" content="https://aoijays.top/pic/%E5%8A%A8%E6%89%8B%E5%AD%A6%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/image-20240806000546831.png">
+<meta property="og:image" content="https://aoijays.top/pic/%E5%8A%A8%E6%89%8B%E5%AD%A6%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/image-20240806010848864.png">
+<meta property="og:image" content="https://aoijays.top/pic/%E5%8A%A8%E6%89%8B%E5%AD%A6%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/image-20240806012515084.png">
+<meta property="article:published_time" content="2024-08-04T15:59:42.000Z">
+<meta property="article:modified_time" content="2024-08-05T17:47:02.580Z">
+<meta property="article:author" content="BiribiriBird">
+<meta property="article:tag" content="动手学深度学习">
+<meta property="article:tag" content="深度学习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://aoijays.top/pic/%E5%8A%A8%E6%89%8B%E5%AD%A6%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/image-20240730015052703.png">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="icon" href="/assets/favicon.ico">
+    <title>动手学深度学习 · Part3 计算机视觉 · BiribiriBird&#39;s Gallery</title>
+    <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+/* This file is meant as a standalone workflow for
+- testing support for link[rel=preload]
+- enabling async CSS loading in browsers that do not support rel=preload
+- applying rel preload css once loaded, whether supported or not.
+*/ -->
+<script>
+    (function (w) {
+        'use strict'
+        // rel=preload support test
+        if (!w.loadCSS) {
+            w.loadCSS = function () {}
+        }
+        // define on the loadCSS obj
+        var rp = (loadCSS.relpreload = {})
+        // rel=preload feature support test
+        // runs once and returns a function for compat purposes
+        rp.support = (function () {
+            var ret
+            try {
+                ret = w.document.createElement('link').relList.supports('preload')
+            } catch (e) {
+                ret = false
+            }
+            return function () {
+                return ret
+            }
+        })()
+
+        // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+        // then change that media back to its intended value on load
+        rp.bindMediaToggle = function (link) {
+            // remember existing media attr for ultimate state, or default to 'all'
+            var finalMedia = link.media || 'all'
+
+            function enableStylesheet() {
+                link.media = finalMedia
+            }
+
+            // bind load handlers to enable media
+            if (link.addEventListener) {
+                link.addEventListener('load', enableStylesheet)
+            } else if (link.attachEvent) {
+                link.attachEvent('onload', enableStylesheet)
+            }
+
+            // Set rel and non-applicable media type to start an async request
+            // note: timeout allows this to happen async to let rendering continue in IE
+            setTimeout(function () {
+                link.rel = 'stylesheet'
+                link.media = 'only x'
+            })
+            // also enable media after 3 seconds,
+            // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+            setTimeout(enableStylesheet, 3000)
+        }
+
+        // loop through link elements in DOM
+        rp.poly = function () {
+            // double check this to prevent external calls from running
+            if (rp.support()) {
+                return
+            }
+            var links = w.document.getElementsByTagName('link')
+            for (var i = 0; i < links.length; i++) {
+                var link = links[i]
+                // qualify links to those with rel=preload and as=style attrs
+                if (
+                    link.rel === 'preload' &&
+                    link.getAttribute('as') === 'style' &&
+                    !link.getAttribute('data-loadcss')
+                ) {
+                    // prevent rerunning on link
+                    link.setAttribute('data-loadcss', true)
+                    // bind listeners to toggle media back
+                    rp.bindMediaToggle(link)
+                }
+            }
+        }
+
+        // if unsupported, run the polyfill
+        if (!rp.support()) {
+            // run once at least
+            rp.poly()
+
+            // rerun poly on an interval until onload
+            var run = w.setInterval(rp.poly, 500)
+            if (w.addEventListener) {
+                w.addEventListener('load', function () {
+                    rp.poly()
+                    w.clearInterval(run)
+                })
+            } else if (w.attachEvent) {
+                w.attachEvent('onload', function () {
+                    rp.poly()
+                    w.clearInterval(run)
+                })
+            }
+        }
+
+        // commonjs
+        if (typeof exports !== 'undefined') {
+            exports.loadCSS = loadCSS
+        } else {
+            w.loadCSS = loadCSS
+        }
+    })(typeof global !== 'undefined' ? global : this)
+</script>
+
+    <style type="text/css">
+    @font-face {
+        font-family: 'Oswald-Regular';
+        src: url("/font/Oswald-Regular.ttf");
+    }
+
+    body {
+        margin: 0;
+    }
+
+    header,
+    footer,
+    .footer-fixed-btn,
+    .sidebar,
+    .container,
+    .site-intro-meta,
+    .toc-wrapper {
+        display: none;
+    }
+
+    .site-intro {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        /* height: 50vh; */
+        overflow: hidden;
+    }
+
+    .site-intro-placeholder {
+        position: absolute;
+        z-index: -2;
+        top: 0;
+        left: 0;
+        width: calc(100% + 300px);
+        height: 100%;
+        background: repeating-linear-gradient(
+            -45deg,
+            #444 0,
+            #444 80px,
+            #333 80px,
+            #333 160px
+        );
+        background-position: center center;
+        transform: translate3d(-226px, 0, 0);
+        animation: gradient-move 2.5s ease-out 0s infinite;
+    }
+
+    @keyframes gradient-move {
+        0% {
+            transform: translate3d(-226px, 0, 0);
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+</style>
+
+    <link id="stylesheet-fancybox" rel="preload" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.36/dist/fancybox/fancybox.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link id="stylesheet-base" rel="preload" href="/css/style.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link id="stylesheet-mobile" rel="preload" href="/css/mobile.css" as="style" onload="this.onload=null;this.rel='stylesheet';this.media='screen and (max-width: 960px)'">
+    <link id="stylesheet-theme-dark" rel="preload" href="/css/dark.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" as="script">
+    <link rel="preload" href="/scripts/main.js" as="script">
+    <link rel="preload" href="/font/Oswald-Regular.ttf" as="font" crossorigin>
+    <link rel="preload" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" as="font" crossorigin>
+    <!-- algolia -->
+    <!-- 百度统计  -->
+    <!-- 谷歌统计  -->
+    <!-- Google tag (gtag.js) -->
+<meta name="generator" content="Hexo 7.3.0"><link href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.css" rel="stylesheet" /></head>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script type="text/javascript">
+        if (typeof window.$ == undefined) {
+            console.warn('jquery load from jsdelivr failed, will load local script')
+            document.write('<script src="/lib/jquery.min.js" />')
+        }
+    </script>
+        <body class="post-body">
+        <!-- header -->
+        <header class="header header-mobile">
+    <!-- top read progress line -->
+    <div class="header-element">
+        <div class="read-progress"></div>
+    </div>
+    <!-- sidebar menu button -->
+    <div class="header-element">
+        <div class="header-sidebar-menu">
+            <div style="padding-left: 1px;">&#xe775;</div>
+        </div>
+    </div>
+    <!-- header actions -->
+    <div class="header-actions">
+        <!-- theme mode switch button -->
+        <span class="header-theme-btn header-element">
+            <i class="fas fa-adjust"></i>
+        </span>
+        <!-- back to home page text -->
+        <span class="home-link header-element">
+            <a href="/">BiribiriBird's Gallery.</a>
+        </span>
+    </div>
+    <!-- toggle banner -->
+    <div class="banner">
+        <div class="blog-title header-element">
+            <a href="/">BiribiriBird&#39;s Gallery.</a>
+        </div>
+        <div class="post-title header-element">
+            <a href="#" class="post-name">动手学深度学习 · Part3 计算机视觉</a>
+        </div>
+    </div>
+</header>
+
+        <!-- fixed footer -->
+        <footer class="footer-fixed">
+    <!-- donate button -->
+
+    <!-- back to top button -->
+    <div class="footer-fixed-btn footer-fixed-btn--hidden back-top">
+        <div>&#xe639;</div>
+    </div>
+</footer>
+
+        <!-- wrapper -->
+        <div class="wrapper">
+            <div class="site-intro" style="    height:50vh;
+">
+    <!-- 主页  -->
+    <!-- 404页  -->
+    <div class="site-intro-placeholder"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
+    <div class="site-intro-meta">
+        <!-- 标题  -->
+        <h1 class="intro-title">
+            <!-- 主页  -->
+                动手学深度学习 · Part3 计算机视觉
+            <!-- 404 -->
+        </h1>
+        <!-- 副标题 -->
+        <p class="intro-subtitle">
+            <!-- 主页副标题  -->
+            <!-- 404 -->
+        </p>
+        <!-- 文章页 meta -->
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                    <div class="post-intro-tags" >
+        <a class="post-tag" href="javascript:void(0);" data-tags="动手学深度学习">动手学深度学习</a>
+        <a class="post-tag" href="javascript:void(0);" data-tags="深度学习">深度学习</a>
+</div>
+
+                <!-- 文章字数统计 -->
+                    <div class="post-intro-read">
+                        <span>字数统计: <span class="post-count word-count">2.7k</span>阅读时长: <span class="post-count reading-time">11 min</span></span>
+                    </div>
+                <div class="post-intro-meta">
+                    <!-- 撰写日期 -->
+                    <span class="iconfont-archer post-intro-calander">&#xe676;</span>
+                    <span class="post-intro-time">2024/08/04</span>
+                    <!-- busuanzi -->
+                        <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                            <span class="iconfont-archer post-intro-busuanzi">&#xe602;</span>
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    <!-- 文章分享 -->
+                    <span class="share-wrapper">
+                        <span class="iconfont-archer share-icon">&#xe71d;</span>
+                        <span class="share-text">Share</span>
+                        <ul class="share-list">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+    </div>
+</div>
+
+            <script>
+  // get user agent
+  function getBrowserVersions() {
+    var u = window.navigator.userAgent
+    return {
+      userAgent: u,
+      trident: u.indexOf('Trident') > -1, //IE内核
+      presto: u.indexOf('Presto') > -1, //opera内核
+      webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+      gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+      mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+      ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+      android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+      iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
+      iPad: u.indexOf('iPad') > -1, //是否为iPad
+      webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
+      weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
+      uc: u.indexOf('UCBrowser') > -1, //是否为android下的UC浏览器
+    }
+  }
+  var browser = {
+    versions: getBrowserVersions(),
+  }
+  console.log('userAgent: ' + browser.versions.userAgent)
+
+  // callback
+  function fontLoaded() {
+    console.log('font loaded')
+    if (document.getElementsByClassName('site-intro-meta')) {
+      document
+        .getElementsByClassName('intro-title')[0]
+        .classList.add('intro-fade-in')
+      document
+        .getElementsByClassName('intro-subtitle')[0]
+        .classList.add('intro-fade-in')
+      var postIntros = document.getElementsByClassName('post-intros')[0]
+      if (postIntros) {
+        postIntros.classList.add('post-fade-in')
+      }
+    }
+  }
+
+  // UC不支持跨域，所以直接显示
+  function asyncCb() {
+    if (browser.versions.uc) {
+      console.log('UCBrowser')
+      fontLoaded()
+    } else {
+      WebFont.load({
+        custom: {
+          families: ['Oswald-Regular'],
+        },
+        loading: function () {
+          // 所有字体开始加载
+          // console.log('font loading');
+        },
+        active: function () {
+          // 所有字体已渲染
+          fontLoaded()
+        },
+        inactive: function () {
+          // 字体预加载失败，无效字体或浏览器不支持加载
+          console.log('inactive: timeout')
+          fontLoaded()
+        },
+        timeout: 5000, // Set the timeout to two seconds
+      })
+    }
+  }
+
+  function asyncErr() {
+    console.warn('script load from CDN failed, will load local script')
+  }
+
+  // load webfont-loader async, and add callback function
+  function async(u, cb, err) {
+    var d = document,
+      t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0]
+    o.src = u
+    if (cb) {
+      o.addEventListener(
+        'load',
+        function (e) {
+          cb(null, e)
+        },
+        false
+      )
+    }
+    if (err) {
+      o.addEventListener(
+        'error',
+        function (e) {
+          err(null, e)
+        },
+        false
+      )
+    }
+    s.parentNode.insertBefore(o, s)
+  }
+
+  var asyncLoadWithFallBack = function (arr, success, reject) {
+    var currReject = function () {
+      reject()
+      arr.shift()
+      if (arr.length) async(arr[0], success, currReject)
+    }
+
+    async(arr[0], success, currReject)
+  }
+
+  asyncLoadWithFallBack(
+    [
+      'https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js',
+      'https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js',
+      "/lib/webfontloader.min.js",
+    ],
+    asyncCb,
+    asyncErr
+  )
+</script>
+
+            <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" alt="loading">
+            <div class="container container-unloaded">
+                <main class="main post-page">
+    <article class="article-entry">
+        <h1><span id="计算机视觉">计算机视觉</span></h1>
+<blockquote>
+<p><strong>动手学深度学习v2</strong> - <a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV18p4y1h7Dr">https://www.bilibili.com/video/BV18p4y1h7Dr</a></p>
+<p>个人评价是需要有一点基础</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1hE411t7RN">Pytorch 小土堆</a> 先把Pytorch基础看一下</li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Wv411h7kN">李宏毅2022春机器学习</a>
+<ul>
+<li>理论部分更推荐李宏毅或者吴恩达，会更好理解</li>
+<li>我的策略是理论在李宏毅这里补，作业不做，在李沐这里实操一下代码</li>
+</ul>
+</li>
+</ul>
+<p>本文不会放太多理论的东西</p>
+<p>记录一下代码实操即可</p>
+<p>理论请移步李宏毅课程的相关笔记</p>
+</blockquote>
+<!-- toc -->
+<ul>
+<li><a href="#%E7%A1%AC%E4%BB%B6">硬件</a>
+<ul>
+<li><a href="#gpu%E5%B9%B6%E8%A1%8C%E8%AE%AD%E7%BB%83">GPU并行训练</a></li>
+<li><a href="#%E4%BB%A3%E7%A0%81">代码</a></li>
+</ul>
+</li>
+<li><a href="#%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%BC%BA">数据增强</a>
+<ul>
+<li><a href="#%E4%BB%A3%E7%A0%81-1">代码</a></li>
+</ul>
+</li>
+<li><a href="#%E5%BE%AE%E8%B0%83">微调</a></li>
+<li><a href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89">计算机视觉</a>
+<ul>
+<li><a href="#%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B">目标检测</a></li>
+<li><a href="#%E9%94%9A%E6%A1%86">锚框</a></li>
+<li><a href="#%E7%89%A9%E4%BD%93%E6%A3%80%E6%B5%8B%E7%AE%97%E6%B3%95">物体检测算法</a>
+<ul>
+<li><a href="#r-cnn">R-CNN</a></li>
+<li><a href="#fast-r-cnn">Fast R-CNN</a></li>
+<li><a href="#fasterr-r-cnn">Fasterr R-CNN</a></li>
+<li><a href="#%E5%8D%95%E5%8F%91%E5%A4%9A%E6%A1%86%E6%A3%80%E6%B5%8Bssd">单发多框检测SSD</a></li>
+<li><a href="#yolo">YOLO</a></li>
+</ul>
+</li>
+<li><a href="#%E8%AF%AD%E4%B9%89%E5%88%86%E5%89%B2">语义分割</a>
+<ul>
+<li><a href="#%E4%B8%8A%E9%87%87%E6%A0%B7%E8%BD%AC%E7%BD%AE%E5%8D%B7%E7%A7%AF">上采样：转置卷积</a></li>
+<li><a href="#%E5%85%A8%E8%BF%9E%E6%8E%A5%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9Cfcn">全连接卷积神经网络FCN</a></li>
+</ul>
+</li>
+<li><a href="#%E6%A0%B7%E5%BC%8F%E8%BF%81%E7%A7%BB">样式迁移</a></li>
+</ul>
+</li>
+</ul>
+<!-- tocstop -->
+<h2><span id="硬件">硬件</span></h2>
+<ul>
+<li>
+<p>CPU角度：避免显式的<code>for</code>，利用原生代码可以提高并行速度</p>
+</li>
+<li>
+<p>GPU角度：少用控制语句，多计算</p>
+</li>
+<li>
+<p>不要频繁交换CPU、GPU数据</p>
+</li>
+</ul>
+<h3><span id="gpu并行训练">GPU并行训练</span></h3>
+<ul>
+<li>数据并行：将小批量数据分成若干块，在不同GPU上用同一模型参数进行计算
+<ul>
+<li>性能更好</li>
+</ul>
+</li>
+<li>模型并行：切割模型，不同GPU负责不同部分
+<ul>
+<li>一般用于模型非常大，单GPU无法支持的情况</li>
+</ul>
+</li>
+<li>通道并行（数据+模型并行）</li>
+</ul>
+<p>以数据并行为例</p>
+<img src="/pic/动手学深度学习/image-20240730015052703.png" alt="image-20240730015052703" style="zoom:67%;">
+<blockquote>
+<ol>
+<li>切割数据，不同GPU进行数据读取</li>
+<li>从Key-Value store拿回当前参数</li>
+<li>并行计算</li>
+<li>传回梯度</li>
+<li>更新梯度</li>
+</ol>
+</blockquote>
+<h3><span id="代码">代码</span></h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">device = <span class="string">&#x27;cuda&#x27;</span> <span class="keyword">if</span> torch.cuda.is_available() <span class="keyword">else</span> <span class="string">&#x27;cpu&#x27;</span></span><br><span class="line">model = base_resnet().to(device)</span><br><span class="line">loss_fn = nn.CrossEntropyLoss()</span><br><span class="line">optimizer = torch.optim.Adam(<span class="built_in">filter</span>(<span class="keyword">lambda</span> p: p.requires_grad, model.parameters()), lr=<span class="number">1e-3</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 多了这个</span></span><br><span class="line"><span class="keyword">if</span> torch.cuda.device_count() &gt; <span class="number">1</span>:</span><br><span class="line">    <span class="comment"># [0, 1]</span></span><br><span class="line">    devices_id = <span class="built_in">list</span>(<span class="built_in">range</span>(torch.cuda.device_count()))</span><br><span class="line">    model = nn.DataParallel(model, devices_id) <span class="comment"># 自动切分数据</span></span><br><span class="line">    </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">training</span>(<span class="params">dataloader, model, loss_fn, optimizer</span>):</span><br><span class="line">    </span><br><span class="line">    model.train()</span><br><span class="line"></span><br><span class="line">    loss, correct= <span class="number">0.0</span>, <span class="number">0.0</span></span><br><span class="line">    n = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> X,y <span class="keyword">in</span> dataloader:</span><br><span class="line">    </span><br><span class="line">        X,y = X.to(devices_id[<span class="number">0</span>], non_blocking=<span class="literal">True</span>), y.to(devices_id[<span class="number">0</span>], non_blocking=<span class="literal">True</span>) </span><br><span class="line">        <span class="comment"># 先放到同一个gpu上</span></span><br><span class="line">        <span class="comment"># val同理</span></span><br><span class="line">        </span><br><span class="line">        output = model(X)</span><br><span class="line"></span><br><span class="line">        cur_loss = loss_fn(output, y)</span><br><span class="line">        _, pred = torch.<span class="built_in">max</span>(output, axis = <span class="number">1</span>)</span><br><span class="line">        _, ypred = torch.<span class="built_in">max</span>(y, axis = <span class="number">1</span>)</span><br><span class="line">            </span><br><span class="line">        optimizer.zero_grad()</span><br><span class="line">        cur_loss.backward()</span><br><span class="line">        optimizer.step()</span><br><span class="line"></span><br><span class="line">        loss += cur_loss * <span class="built_in">len</span>(y)</span><br><span class="line">        correct += torch.<span class="built_in">sum</span>(ypred==pred).item()</span><br><span class="line">        n += <span class="built_in">len</span>(y)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> loss / n, correct / n</span><br></pre></td></tr></table></figure>
+<p>训练效果：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">单卡训练</span></span><br><span class="line"><span class="string">start train</span></span><br><span class="line"><span class="string">epoch 5/5: loss = 0.08559861779212952 acc = 0.9735049720746493</span></span><br><span class="line"><span class="string">Validation: loss = 0.33436986804008484 acc = 0.8986652138381912</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">finish:353.13479590415955s</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">双卡训练</span></span><br><span class="line"><span class="string">epoch 5/5: loss = 0.0956471711397171 acc = 0.9695545565999183</span></span><br><span class="line"><span class="string">Validation: loss = 0.31762591004371643 acc = 0.8994824298556252</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">finish:204.22283124923706s</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>模型副本：在每个GPU上，都会创建一个模型的副本。这些副本共享相同的参数，但每个副本都独立地处理一部分输入数据。</li>
+<li>结果合并：在所有GPU上的处理完成后自动合并</li>
+<li>默认是放在0号gpu，因此显存稍微会大一点</li>
+</ul>
+<p>注意事项：</p>
+<ul>
+<li>如果多块GPU的计算能力、显存不一致，需要调节数据划分比例，榨干性能</li>
+</ul>
+<h2><span id="数据增强">数据增强</span></h2>
+<ul>
+<li>对已有数据集进行增强（相当于正则项），添加多样性</li>
+</ul>
+<h3><span id="代码">代码</span></h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 展示对比</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">print_img</span>(<span class="params">image,trans</span>):</span><br><span class="line">    fig, axes = plt.subplots(<span class="number">2</span>, <span class="number">4</span>, figsize=(<span class="number">12</span>, <span class="number">6</span>))</span><br><span class="line">    axes = axes.ravel()  <span class="comment"># 将 2x4 的数组转换为一维数组</span></span><br><span class="line">    <span class="comment"># 原图</span></span><br><span class="line">    axes[<span class="number">0</span>].imshow(image)</span><br><span class="line">    axes[<span class="number">0</span>].set_title(<span class="string">&#x27;Original Image&#x27;</span>)</span><br><span class="line">    axes[<span class="number">0</span>].axis(<span class="string">&#x27;off&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 变换后的图像</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>,<span class="number">8</span>):</span><br><span class="line">        axes[i].imshow(trans(image))  <span class="comment"># 变换</span></span><br><span class="line">        axes[i].set_title(<span class="string">f&#x27;Transformed Image<span class="subst">&#123;i&#125;</span>&#x27;</span>)</span><br><span class="line">        axes[i].axis(<span class="string">&#x27;off&#x27;</span>)</span><br><span class="line">    plt.show()</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line"><span class="comment"># 读取图片</span></span><br><span class="line">image = Image.<span class="built_in">open</span>(<span class="string">&#x27;data/Muelsyse.png&#x27;</span>)</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ul>
+<li>翻转</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 随机水平翻转 有可能不翻转</span></span><br><span class="line">print_img(image, transforms.RandomHorizontalFlip() )</span><br><span class="line"></span><br><span class="line"><span class="comment"># 注意，是否使用垂直翻转需要结合具体情况</span></span><br><span class="line">print_img(image, transforms.RandomVerticalFlip() )</span><br></pre></td></tr></table></figure>
+<p>垂直翻转对于人、动物，或是其他在实际情况下很少倒立的物体，不建议使用</p>
+<p>需要结合生产需求，否则没有什么引入噪声的意义</p>
+<p>（例如：颜色变化，实际情况确实大概率会因为光线问题而出现，因此有加入此数据增强的必要）</p>
+<p><img src="/pic/%E5%8A%A8%E6%89%8B%E5%AD%A6%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/image-20240731160505363.png" alt="image-20240731160505363"></p>
+<p><img src="/pic/%E5%8A%A8%E6%89%8B%E5%AD%A6%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/image-20240731160527491.png" alt="image-20240731160527491"></p>
+<ul>
+<li>裁剪与缩放</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">trans3 = torchvision.transforms.RandomResizedCrop (</span><br><span class="line">    (<span class="number">200</span>, <span class="number">200</span>), scale=(<span class="number">0.1</span>, <span class="number">1</span>), ratio=(<span class="number">0.5</span>, <span class="number">2</span>)</span><br><span class="line">    <span class="comment"># (200,200) 裁剪之后需要拉伸输出图片的尺寸（单位：像素）</span></span><br><span class="line">    <span class="comment"># scale: 裁剪矩形的面积需要在原图像的(0.1,1)范围内</span></span><br><span class="line">    <span class="comment"># ratio: 裁剪矩形的高与宽的比，需要在(0.5,2)的范围</span></span><br><span class="line">)</span><br><span class="line">print_img(image, trans3)</span><br></pre></td></tr></table></figure>
+<p><img src="/pic/%E5%8A%A8%E6%89%8B%E5%AD%A6%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/image-20240731160602118.png" alt="image-20240731160602118"></p>
+<ul>
+<li>亮度</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">print_img(</span><br><span class="line">    image,</span><br><span class="line">    transforms.ColorJitter(</span><br><span class="line">        brightness=<span class="number">0.2</span>, contrast=<span class="number">0.2</span>, saturation=<span class="number">0.2</span>, hue=<span class="number">0.2</span></span><br><span class="line">    )</span><br><span class="line">)</span><br><span class="line"><span class="comment"># brightness=0.5 等价于brightness=[1-0.5,1+0.5]（可以直接指定min max范围）</span></span><br><span class="line"><span class="comment"># 1是原亮度</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 同理 constrast是对比度 saturation是饱和度 都不能是负数</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># hue是色相范围 其取值为[-0.5,0.5]</span></span><br><span class="line"><span class="comment"># 即hue=x 等价于 hue=[-x,x]</span></span><br><span class="line"><span class="comment"># 也可以直接指定范围</span></span><br><span class="line"><span class="comment"># 注意：：：：：：：：：：</span></span><br><span class="line"><span class="comment"># 要求输入的像素值不能为负！！！</span></span><br><span class="line"><span class="comment"># 避免使用此操作前 归一化到负值范围</span></span><br></pre></td></tr></table></figure>
+<p><img src="/pic/%E5%8A%A8%E6%89%8B%E5%AD%A6%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/image-20240731162415552.png" alt="image-20240731162415552"></p>
+<p>通常我们只需要结合多种方法即可：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">trans = transforms.Compose([</span><br><span class="line">    transforms.RandomHorizontalFlip(),</span><br><span class="line">    torchvision.transforms.RandomResizedCrop(</span><br><span class="line">        (<span class="number">200</span>, <span class="number">200</span>), scale=(<span class="number">0.1</span>, <span class="number">1</span>), ratio=(<span class="number">0.5</span>, <span class="number">2</span>)</span><br><span class="line">    ),</span><br><span class="line">    transforms.ColorJitter(</span><br><span class="line">        brightness=<span class="number">0.3</span>, contrast=<span class="number">0.3</span>, saturation=<span class="number">0.3</span>, hue=<span class="number">0</span></span><br><span class="line">    )</span><br><span class="line">])</span><br><span class="line">print_img(image, trans)</span><br></pre></td></tr></table></figure>
+<p><img src="/pic/%E5%8A%A8%E6%89%8B%E5%AD%A6%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/image-20240731162751133.png" alt="image-20240731162751133"></p>
+<h2><span id="微调">微调</span></h2>
+<p>在较大的源数据集上进行训练后得到的预训练模型</p>
+<p>可以微调后在较小的（同种类）训练模型上使用</p>
+<p>微调时需要加强正则化力度（本身已经训练得差不多了）</p>
+<ul>
+<li>更小的学习率</li>
+<li>更少的训练epoch</li>
+</ul>
+<p>微调时需要与源数据进行相同的数据增强、数据处理：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 源数据的性质 可以直接使用</span></span><br><span class="line">normalize = torchvision.transforms.Normalize([<span class="number">0.485</span>, <span class="number">0.456</span>, <span class="number">0.406</span>],</span><br><span class="line">                                             [<span class="number">0.229</span>, <span class="number">0.224</span>, <span class="number">0.225</span>])</span><br><span class="line"></span><br><span class="line">train_augs = torchvision.transforms.Compose([</span><br><span class="line">    torchvision.transforms.RandomResizedCrop(<span class="number">224</span>),</span><br><span class="line">    torchvision.transforms.RandomHorizontalFlip(),</span><br><span class="line">    torchvision.transforms.ToTensor(), normalize])</span><br><span class="line"></span><br><span class="line">test_augs = torchvision.transforms.Compose([</span><br><span class="line">    torchvision.transforms.Resize(<span class="number">256</span>),</span><br><span class="line">    torchvision.transforms.CenterCrop(<span class="number">224</span>),</span><br><span class="line">    torchvision.transforms.ToTensor(), normalize])</span><br></pre></td></tr></table></figure>
+<p>需要修改最后的分类层</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">finetune_net = torchvision.models.resnet18(pretrained=<span class="literal">True</span>)</span><br><span class="line">finetune_net.fc = nn.Linear(finetune_net.fc.in_features, <span class="number">2</span>)</span><br><span class="line">nn.init.xavier_uniform_(finetune_net.fc.weight) <span class="comment"># 初始化数据</span></span><br></pre></td></tr></table></figure>
+<p>可以直接冻结底层的梯度</p>
+<p>但也可以让底层的学习率更低，高层学习率</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">params_1x = [ </span><br><span class="line">    param <span class="keyword">for</span> name, param <span class="keyword">in</span> net.named_parameters() </span><br><span class="line">    	<span class="keyword">if</span> name <span class="keyword">not</span> <span class="keyword">in</span> [<span class="string">&quot;fc.weight&quot;</span>, <span class="string">&quot;fc.bias&quot;</span>]</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">trainer = torch.optim.SGD([</span><br><span class="line">    &#123;<span class="string">&#x27;params&#x27;</span>: params_1x&#125;, </span><br><span class="line">    &#123;<span class="string">&#x27;params&#x27;</span>: net.fc.parameters(),<span class="string">&#x27;lr&#x27;</span>: learning_rate * <span class="number">10</span>&#125;], <span class="comment"># 对高层放大学习率</span></span><br><span class="line">    lr=learning_rate,weight_decay=<span class="number">0.001</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h2><span id="计算机视觉">计算机视觉</span></h2>
+<h3><span id="目标检测">目标检测</span></h3>
+<ul>
+<li>
+<p>之前接触是对图片中的单对象进行分类，目标检测需要找到物体的<strong>位置、类别</strong></p>
+</li>
+<li>
+<p>使用<strong>边缘框</strong>进行表示，记录左上角右下角（或左上角、长宽）四个参数</p>
+</li>
+</ul>
+<p><img src="/pic/%E5%8A%A8%E6%89%8B%E5%AD%A6%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/image-20240803011705068.png" alt="image-20240803011705068"></p>
+<ul>
+<li>批量进行预测时，设定单张图片的预测物体上限
+<ul>
+<li>超过上限，舍弃</li>
+<li>低于上限，填充0</li>
+<li>从而保证返回的物体张量是规则的</li>
+</ul>
+</li>
+</ul>
+<h3><span id="锚框">锚框</span></h3>
+<ul>
+<li>
+<p>边缘框代表真实位置</p>
+</li>
+<li>
+<p>提出多个锚框</p>
+<ul>
+<li>第一步预测：每个锚框内是否有物体</li>
+<li>第二步预测：锚框到真实位置的偏移</li>
+</ul>
+</li>
+<li>
+<p>IoU交并比：计算两个框的相似度</p>
+<ul>
+<li>
+<p class="katex-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>J</mi><mo stretchy="false">(</mo><mi>A</mi><mo separator="true">,</mo><mi>B</mi><mo stretchy="false">)</mo><mo>=</mo><mfrac><mrow><mi mathvariant="normal">∣</mi><mi>A</mi><mo>∩</mo><mi>B</mi><mi mathvariant="normal">∣</mi></mrow><mrow><mi mathvariant="normal">∣</mi><mi>A</mi><mo>∪</mo><mi>B</mi><mi mathvariant="normal">∣</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">J(A,B) = \frac{|A\cap B|}{|A\cup B|}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.09618em;">J</span><span class="mopen">(</span><span class="mord mathdefault">A</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault" style="margin-right:0.05017em;">B</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:2.363em;vertical-align:-0.936em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">∣</span><span class="mord mathdefault">A</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∪</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord mathdefault" style="margin-right:0.05017em;">B</span><span class="mord">∣</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">∣</span><span class="mord mathdefault">A</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∩</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord mathdefault" style="margin-right:0.05017em;">B</span><span class="mord">∣</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.936em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
+</li>
+</ul>
+</li>
+<li>
+<p>锚框作为训练样本</p>
+<ul>
+<li>标注：背景（大量，因此噪声非常多）</li>
+<li>标注：真实边缘框</li>
+</ul>
+</li>
+</ul>
+<p><img src="/pic/%E5%8A%A8%E6%89%8B%E5%AD%A6%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/image-20240803180830793-1722679711501-1.png" alt="image-20240803180830793"></p>
+<p>计算每个锚框和边缘框的IoU值，进行最大匹配，匹配完成后删除同行同列</p>
+<img src="/pic/动手学深度学习/image-20240803181209447.png" alt="image-20240803181209447" style="zoom:50%;">
+<ul>
+<li>NMS（非极大值抑制）：选择置信度最高的锚框，去除所有与这个锚框IoU大于阈值的其他锚框（避免重复冗余）</li>
+</ul>
+<h3><span id="物体检测算法">物体检测算法</span></h3>
+<ul>
+<li>Two-Stage：R-CNN系算法（Region-based CNN），先通过启发式搜索（或CNN网络）提取出候选锚框，第二阶段再对候选框进行分类、回归，准确度高</li>
+<li>One-Stage：（Yolo和SSD），均匀地在图片的<strong>不同位置</strong>进行<strong>密集</strong>抽样，采取不同尺度和长宽比，抽取后使用CNN提取特征后直接进行分类与回归，速度更快</li>
+</ul>
+<h4><span id="r-cnn">R-CNN</span></h4>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/z135733/article/details/136005255">【参考】R-CNN系列算法全面概述（一文搞懂R-CNN、Fast R-CNN、Faster R-CNN的来龙去脉</a></p>
+<p><img src="/pic/%E5%8A%A8%E6%89%8B%E5%AD%A6%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/image-20240803213048489.png" alt="image-20240803213048489"></p>
+<ul>
+<li>抽取一定量的候选框</li>
+<li>使用CNN提取特征</li>
+<li>依次送入每个类对应的SVM分类器，判断是否是这一类</li>
+<li>使用线性回归器，调整锚框偏移位置</li>
+</ul>
+<h4><span id="fast-r-cnn">Fast R-CNN</span></h4>
+<p>R-CNN将每个候选框都送入CNN进行特征提取</p>
+<p>Faster R-CNN将整张图片送入CNN，共享卷积层，重复部分不再计算，直接提取对应值</p>
+<p><img src="/pic/%E5%8A%A8%E6%89%8B%E5%AD%A6%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/image-20240803214342417.png" alt="image-20240803214342417"></p>
+<h4><span id="fasterr-r-cnn">Fasterr R-CNN</span></h4>
+<p>使用**区域提议网络（region proposal network，RPN）**得到候选框，其他部分不变</p>
+<h4><span id="单发多框检测ssd">单发多框检测SSD</span></h4>
+<p>single-shot 其实是算法一步到位的意思</p>
+<img src="/pic/动手学深度学习/image-20240804013133662.png" alt="image-20240804013133662" style="zoom:67%;">
+<ul>
+<li>对于提取好特征的图片，<strong>每个像素</strong>将以自己为中心，生成不同大小、高宽比的锚框，进行分类、回归</li>
+<li>网络没加深一次，就会做一次这样的操作</li>
+<li>相当于越高层检测的是越大的物体，越底层检测越小的物体</li>
+</ul>
+<h4><span id="yolo">YOLO</span></h4>
+<ul>
+<li>SSD锚框的锚框生成策略导致重复率非常高</li>
+<li>将当前网络层的图像进行切分为<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>×</mo><mi>S</mi></mrow><annotation encoding="application/x-tex">S\times S</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.76666em;vertical-align:-0.08333em;"></span><span class="mord mathdefault" style="margin-right:0.05764em;">S</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.05764em;">S</span></span></span></span>个均匀的锚框，每个锚框检测<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi></mrow><annotation encoding="application/x-tex">B</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.05017em;">B</span></span></span></span>个边缘框，防止一个锚框内有多个物体</li>
+<li>其他和SSD差不多</li>
+</ul>
+<h3><span id="语义分割">语义分割</span></h3>
+<blockquote>
+<p>检测每个像素属于哪一类</p>
+</blockquote>
+<img src="/pic/动手学深度学习/image-20240804014137552.png" alt="image-20240804014137552" style="zoom:67%;">
+<ul>
+<li>实例分割：需要分类出具体是哪个物体</li>
+</ul>
+<img src="/pic/动手学深度学习/image-20240804014532467.png" alt="image-20240804014532467" style="zoom:67%;">
+<h4><span id="上采样转置卷积">上采样：转置卷积</span></h4>
+<p>语义分割需要做像素级别的输出</p>
+<p>但是不断卷积会使得feature map变小</p>
+<p>以及其他需要增大feature map的操作 我们需要通过上采样进行实现</p>
+<p>使用转置矩阵进行变大操作</p>
+<p><img src="/pic/%E5%8A%A8%E6%89%8B%E5%AD%A6%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/image-20240805223833384.png" alt="image-20240805223833384"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">x = torch.arange(<span class="number">4.</span>)</span><br><span class="line">k = x.clone()</span><br><span class="line"></span><br><span class="line">x = x.reshape(<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">2</span>)</span><br><span class="line">k = k.reshape(<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">tconv = nn.ConvTranspose2d(<span class="number">1</span>, <span class="number">1</span>, kernel_size=<span class="number">2</span>, bias=<span class="literal">False</span>)</span><br><span class="line">tconv.weight.data = k</span><br><span class="line">tconv(x)</span><br><span class="line"></span><br><span class="line"><span class="comment"># tensor([[[[ 0.,  0.,  1.],</span></span><br><span class="line"><span class="comment">#          [ 0.,  4.,  6.],</span></span><br><span class="line"><span class="comment">#         [ 4., 12.,  9.]]]], grad_fn=&lt;ConvolutionBackward0&gt;)</span></span><br></pre></td></tr></table></figure>
+<p>对于转置卷积来说，padding相当于删掉最外面一圈数字</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">tconv = nn.ConvTranspose2d(<span class="number">1</span>, <span class="number">1</span>, kernel_size=<span class="number">2</span>, padding=<span class="number">1</span>, bias=<span class="literal">False</span>)</span><br><span class="line">tconv(x)</span><br><span class="line"><span class="comment"># tensor([[[[4.]]]], grad_fn=&lt;ConvolutionBackward0&gt;)</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>原文：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/549164774?utm_psn=1803937412205920257">卷积操作总结（二）—— 转置卷积（transposed convolution） - 知乎 (zhihu.com)</a></p>
+</blockquote>
+<p><img src="/pic/%E5%8A%A8%E6%89%8B%E5%AD%A6%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/image-20240806000358739.png" alt="image-20240806000358739"></p>
+<ul>
+<li>
+<p>对于一般的卷积操作，会使得feature map减小</p>
+</li>
+<li>
+<p>我们展开inputs成一维向量，kernel展开成二维矩阵，则可以表示为：</p>
+</li>
+</ul>
+<p><img src="/pic/%E5%8A%A8%E6%89%8B%E5%AD%A6%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/image-20240806000450103.png" alt="image-20240806000450103"></p>
+<ul>
+<li>卷积操作可以将16维的向量通过矩阵乘法输出一个4维的向量。那么，如何从4维的向量计算得到一个16维的向量呢？</li>
+</ul>
+<p><img src="/pic/%E5%8A%A8%E6%89%8B%E5%AD%A6%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/image-20240806000546831.png" alt="image-20240806000546831"></p>
+<ul>
+<li>转置一下就好了</li>
+</ul>
+<h4><span id="全连接卷积神经网络fcn">全连接卷积神经网络FCN</span></h4>
+<ul>
+<li>使用FCN替换全连接网络，实现每个像素的预测</li>
+</ul>
+<p><img src="/pic/%E5%8A%A8%E6%89%8B%E5%AD%A6%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/image-20240806010848864.png" alt="image-20240806010848864"></p>
+<h3><span id="样式迁移">样式迁移</span></h3>
+<p><img src="/pic/%E5%8A%A8%E6%89%8B%E5%AD%A6%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/image-20240806012515084.png" alt="image-20240806012515084"></p>
+<ul>
+<li>
+<p>左：每层都对图片<strong>内容</strong>进行特征提取，可以预训练</p>
+</li>
+<li>
+<p>右：每层都对图片<strong>样式</strong>进行特征提取，可以预训练</p>
+</li>
+<li>
+<p>中间：我们的训练目标就是这个网络，希望做到每一层和左边对于内容的误差尽可能小、和右边对于样式的误差尽可能小，并且需要降低噪点，有一个自己的loss</p>
+</li>
+</ul>
+
+    </article>
+    <!-- license -->
+        <div class="license-wrapper">
+            <p>原文作者：<a href="https://aoijays.top">BiribiriBird</a>
+            <p>原文链接：<a href="https://aoijays.top/2024/08/04/D2l-Part3/">https://aoijays.top/2024/08/04/D2l-Part3/</a>
+            <p>发表日期：<a href="https://aoijays.top/2024/08/04/D2l-Part3/">August 4th 2024, 11:59:42 pm</a>
+            <p>更新日期：<a href="https://aoijays.top/2024/08/04/D2l-Part3/">August 6th 2024, 1:47:02 am</a>
+            <p>版权声明：本文采用<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
+        </div>
+    <!-- paginator -->
+    <ul class="post-paginator">
+        <li class="next">
+                <div class="nextSlogan">Next Post</div>
+                <a href="/2024/08/05/D2l-Part3-ssd/" title="动手学深度学习 · Part3 SSD代码实现">
+                    <div class="nextTitle">动手学深度学习 · Part3 SSD代码实现</div>
+                </a>
+        </li>
+        <li class="previous">
+                <div class="prevSlogan">Previous Post</div>
+                <a href="/2024/07/28/D2l-Part2/" title="动手学深度学习 · Part2 卷积神经网络">
+                    <div class="prevTitle">动手学深度学习 · Part2 卷积神经网络</div>
+                </a>
+        </li>
+    </ul>
+    <!-- comment -->
+        <div class="post-comment">
+            <!-- 来必力 City 版安装代码 -->
+
+            
+            
+            
+            <!-- utteranc评论 -->
+
+            <!-- partial('_partial/comment/changyan') -->
+            <!--PC版-->
+
+            
+            
+            
+        </div>
+    <!-- timeliness note -->
+    <!-- idea from: https://hexo.fluid-dev.com/posts/hexo-injector/#%E6%96%87%E7%AB%A0%E6%97%B6%E6%95%88%E6%80%A7%E6%8F%90%E7%A4%BA -->
+    <!-- Mathjax -->
+</main>
+
+                <!-- profile -->
+            </div>
+            <footer class="footer footer-unloaded">
+    <!-- social  -->
+        <div class="social">
+                            <a href="mailto:954436671@qq.com" class="iconfont-archer email" title="email" ></a>
+                <a href="//github.com/aoijays" class="iconfont-archer github" target="_blank" title="github"></a>
+                <a href="https://www.zhihu.com/people/Chirs2002" class="iconfont-archer zhihu" target="_blank" title="zhihu"></a>
+                <a href="https://www.instagram.com/biribiribird/" class="iconfont-archer instagram" target="_blank" title="instagram"></a>
+                <a href="https://space.bilibili.com/498088093" class="iconfont-archer bilibili" target="_blank" title="bilibili"></a>
+
+        </div>
+    <!-- powered by Hexo  -->
+    <div class="copyright">
+        <span id="hexo-power">Powered by <a href="https://hexo.io/" target="_blank">Hexo</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
+    </div>
+    <!-- website approve for Chinese user -->
+    <!-- 不蒜子  -->
+        <div class="busuanzi-container">
+                <span id="busuanzi_container_site_pv">PV: <span id="busuanzi_value_site_pv"></span> :)</span>
+        </div>
+</footer>
+
+        </div>
+        <!-- toc -->
+            <div class="toc-wrapper toc-wrapper-loding" style=    top:50vh;
+>
+                <div class="toc-catalog">
+                    <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+                </div>
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">计算机视觉</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.1.</span> <span class="toc-text">硬件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">1.1.1.</span> <span class="toc-text">GPU并行训练</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">1.1.2.</span> <span class="toc-text">代码</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.2.</span> <span class="toc-text">数据增强</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">1.2.1.</span> <span class="toc-text">代码</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.3.</span> <span class="toc-text">微调</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.4.</span> <span class="toc-text">计算机视觉</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">1.4.1.</span> <span class="toc-text">目标检测</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">1.4.2.</span> <span class="toc-text">锚框</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">1.4.3.</span> <span class="toc-text">物体检测算法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">1.4.3.1.</span> <span class="toc-text">R-CNN</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">1.4.3.2.</span> <span class="toc-text">Fast R-CNN</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">1.4.3.3.</span> <span class="toc-text">Fasterr R-CNN</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">1.4.3.4.</span> <span class="toc-text">单发多框检测SSD</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">1.4.3.5.</span> <span class="toc-text">YOLO</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">1.4.4.</span> <span class="toc-text">语义分割</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">1.4.4.1.</span> <span class="toc-text">上采样：转置卷积</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">1.4.4.2.</span> <span class="toc-text">全连接卷积神经网络FCN</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">1.4.5.</span> <span class="toc-text">样式迁移</span></a></li></ol></li></ol></li></ol>
+            </div>
+        <!-- sidebar -->
+        <div class="sidebar sidebar-hide">
+    <ul class="sidebar-tabs sidebar-tabs-active-0">
+        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
+        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
+        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
+    </ul>
+    <div class="sidebar-content sidebar-content-show-archive">
+        <div class="sidebar-panel-archives">
+    <!-- 在 ejs 中将 archive 按照时间排序 -->
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    <div class="total-and-search">
+        <div class="total-archive">
+        Total : 11
+        </div>
+        <!-- search  -->
+    </div>
+    <div class="post-archive">
+            <div class="archive-year"> 2024 </div>
+            <ul class="year-list">
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/05</span>
+            <a class="archive-post-title" href="/2024/08/05/D2l-Part3-ssd/">动手学深度学习 · Part3 SSD代码实现</a>
+        </li>
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/04</span>
+            <a class="archive-post-title" href="/2024/08/04/D2l-Part3/">动手学深度学习 · Part3 计算机视觉</a>
+        </li>
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/28</span>
+            <a class="archive-post-title" href="/2024/07/28/D2l-Part2/">动手学深度学习 · Part2 卷积神经网络</a>
+        </li>
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/27</span>
+            <a class="archive-post-title" href="/2024/07/27/Lee-ML-L3/">李宏毅机器学习L3 · Image as input</a>
+        </li>
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/25</span>
+            <a class="archive-post-title" href="/2024/07/25/Lee-ML-L2/">李宏毅机器学习L2 · What to do if my network fails to train</a>
+        </li>
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/23</span>
+            <a class="archive-post-title" href="/2024/07/23/D2l-Part1/">动手学深度学习 · Part1 深度学习基础</a>
+        </li>
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/21</span>
+            <a class="archive-post-title" href="/2024/07/21/Pytorch-intro/">Pytorch小土堆 - 笔记</a>
+        </li>
+        <li class="archive-post-item">
+            <span class="archive-post-date">06/13</span>
+            <a class="archive-post-title" href="/2024/06/13/MLP-Handwrite-2024-6/">手推神经网络</a>
+        </li>
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/26</span>
+            <a class="archive-post-title" href="/2024/05/26/cuda-zero-2024-5/">CUDA编程0基础入门笔记</a>
+        </li>
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/01</span>
+            <a class="archive-post-title" href="/2024/05/01/CS231A/">CS231A - 计算机视觉课堂笔记</a>
+        </li>
+        <li class="archive-post-item">
+            <span class="archive-post-date">01/06</span>
+            <a class="archive-post-title" href="/2024/01/06/hello-world/">Hello World</a>
+        </li>
+            </ul>
+    </div>
+</div>
+
+        <div class="sidebar-panel-tags">
+    <div class="sidebar-tags-name">
+            <span class="sidebar-tag-name" data-tags="动手学深度学习">
+                <span class="iconfont-archer">&#xe606;</span>
+                动手学深度学习
+            </span>
+            <span class="sidebar-tag-name" data-tags="深度学习">
+                <span class="iconfont-archer">&#xe606;</span>
+                深度学习
+            </span>
+            <span class="sidebar-tag-name" data-tags="李宏毅">
+                <span class="iconfont-archer">&#xe606;</span>
+                李宏毅
+            </span>
+            <span class="sidebar-tag-name" data-tags="cuda">
+                <span class="iconfont-archer">&#xe606;</span>
+                cuda
+            </span>
+            <span class="sidebar-tag-name" data-tags="Pytorch">
+                <span class="iconfont-archer">&#xe606;</span>
+                Pytorch
+            </span>
+            <span class="sidebar-tag-name" data-tags="CV">
+                <span class="iconfont-archer">&#xe606;</span>
+                CV
+            </span>
+    </div>
+    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
+    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
+        缺失模块，请参考主题文档进行安装配置：https://github.com/fi3ework/hexo-theme-archer#%E5%AE%89%E8%A3%85%E4%B8%BB%E9%A2%98
+    </div> 
+    <div class="sidebar-tags-list"></div>
+</div>
+
+        <div class="sidebar-panel-categories">
+    <div class="sidebar-categories-name">
+    </div>
+    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
+    <div class="sidebar-categories-list"></div>
+</div>
+
+    </div>
+</div>
+
+        <!-- site-meta -->
+        <script>
+    var siteMetaRoot = "/"
+    if (siteMetaRoot === "undefined") {
+        siteMetaRoot = '/'
+    }
+    var siteMeta = {
+        url: "https://aoijays.top",
+        root: siteMetaRoot,
+        author: "BiribiriBird"
+    }
+</script>
+
+        <!-- import experimental options here -->
+        <!-- Custom Font -->
+
+        <!-- main func -->
+        <script src="/scripts/main.js"></script>
+        <!-- fancybox -->
+        <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.36/dist/fancybox/fancybox.umd.js" onload="window.Fancybox.bind('[data-fancybox]')" defer></script>
+        <!-- algolia -->
+        <!-- busuanzi -->
+            <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+        <!-- async load share.js -->
+            <script src="/scripts/share.js" async></script>
+        <!-- mermaid -->
+    </body>
+</html>
