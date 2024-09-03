@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <!-- title -->
+<!-- keywords -->
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="author" content="BiribiriBird">
+    <meta name="renderer" content="webkit">
+    <meta name="copyright" content="BiribiriBird">
+        <meta name="keywords" content="hexo,hexo-theme,hexo-blog,Neworld1111,AoiJays,BiribiriBird">
+    <meta name="description" content="">
+    <meta name="description" content="L7. Self-Supervised Learning  ML 2022 Spring (ntu.edu.tw) https:&#x2F;&#x2F;www.bilibili.com&#x2F;video&#x2F;BV1VN4y1P7Zj 【《2021机器学习-李宏毅》学习笔记】_李宏毅机器学习2021github-CSDN博客    BERT  Masking Input Next Sentence Prediction Down">
+<meta property="og:type" content="article">
+<meta property="og:title" content="李宏毅机器学习L7 · Self-Supervised Learning">
+<meta property="og:url" content="https://aoijays.top/2024/09/02/Lee-ML-L7/index.html">
+<meta property="og:site_name" content="BiribiriBird&#39;s Gallery">
+<meta property="og:description" content="L7. Self-Supervised Learning  ML 2022 Spring (ntu.edu.tw) https:&#x2F;&#x2F;www.bilibili.com&#x2F;video&#x2F;BV1VN4y1P7Zj 【《2021机器学习-李宏毅》学习笔记】_李宏毅机器学习2021github-CSDN博客    BERT  Masking Input Next Sentence Prediction Down">
+<meta property="og:locale">
+<meta property="og:image" content="https://aoijays.top/pic/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20240903133442427.png">
+<meta property="og:image" content="https://aoijays.top/pic/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20240903134336771.png">
+<meta property="og:image" content="https://aoijays.top/pic/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20240903135148552.png">
+<meta property="og:image" content="https://aoijays.top/pic/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20240903141149162.png">
+<meta property="og:image" content="https://aoijays.top/pic/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20240903142413117.png">
+<meta property="og:image" content="https://aoijays.top/pic/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20240903143813713.png">
+<meta property="og:image" content="https://aoijays.top/pic/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20240903145436342.png">
+<meta property="og:image" content="https://aoijays.top/pic/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20240903150213915.png">
+<meta property="og:image" content="https://aoijays.top/pic/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20240903151042272.png">
+<meta property="og:image" content="https://aoijays.top/pic/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20240903151221058.png">
+<meta property="og:image" content="https://aoijays.top/pic/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20240903152807172.png">
+<meta property="og:image" content="https://aoijays.top/pic/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20240903153037852.png">
+<meta property="og:image" content="https://aoijays.top/pic/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20240903163040171.png">
+<meta property="og:image" content="https://aoijays.top/pic/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20240903164347156.png">
+<meta property="og:image" content="https://aoijays.top/pic/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20240903164507691.png">
+<meta property="og:image" content="https://aoijays.top/pic/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20240903164527083.png">
+<meta property="article:published_time" content="2024-09-02T15:57:19.000Z">
+<meta property="article:modified_time" content="2024-09-03T09:00:27.718Z">
+<meta property="article:author" content="BiribiriBird">
+<meta property="article:tag" content="深度学习">
+<meta property="article:tag" content="李宏毅">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://aoijays.top/pic/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20240903133442427.png">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="icon" href="/assets/favicon.ico">
+    <title>李宏毅机器学习L7 · Self-Supervised Learning · BiribiriBird&#39;s Gallery</title>
+    <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+/* This file is meant as a standalone workflow for
+- testing support for link[rel=preload]
+- enabling async CSS loading in browsers that do not support rel=preload
+- applying rel preload css once loaded, whether supported or not.
+*/ -->
+<script>
+    (function (w) {
+        'use strict'
+        // rel=preload support test
+        if (!w.loadCSS) {
+            w.loadCSS = function () {}
+        }
+        // define on the loadCSS obj
+        var rp = (loadCSS.relpreload = {})
+        // rel=preload feature support test
+        // runs once and returns a function for compat purposes
+        rp.support = (function () {
+            var ret
+            try {
+                ret = w.document.createElement('link').relList.supports('preload')
+            } catch (e) {
+                ret = false
+            }
+            return function () {
+                return ret
+            }
+        })()
+
+        // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+        // then change that media back to its intended value on load
+        rp.bindMediaToggle = function (link) {
+            // remember existing media attr for ultimate state, or default to 'all'
+            var finalMedia = link.media || 'all'
+
+            function enableStylesheet() {
+                link.media = finalMedia
+            }
+
+            // bind load handlers to enable media
+            if (link.addEventListener) {
+                link.addEventListener('load', enableStylesheet)
+            } else if (link.attachEvent) {
+                link.attachEvent('onload', enableStylesheet)
+            }
+
+            // Set rel and non-applicable media type to start an async request
+            // note: timeout allows this to happen async to let rendering continue in IE
+            setTimeout(function () {
+                link.rel = 'stylesheet'
+                link.media = 'only x'
+            })
+            // also enable media after 3 seconds,
+            // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+            setTimeout(enableStylesheet, 3000)
+        }
+
+        // loop through link elements in DOM
+        rp.poly = function () {
+            // double check this to prevent external calls from running
+            if (rp.support()) {
+                return
+            }
+            var links = w.document.getElementsByTagName('link')
+            for (var i = 0; i < links.length; i++) {
+                var link = links[i]
+                // qualify links to those with rel=preload and as=style attrs
+                if (
+                    link.rel === 'preload' &&
+                    link.getAttribute('as') === 'style' &&
+                    !link.getAttribute('data-loadcss')
+                ) {
+                    // prevent rerunning on link
+                    link.setAttribute('data-loadcss', true)
+                    // bind listeners to toggle media back
+                    rp.bindMediaToggle(link)
+                }
+            }
+        }
+
+        // if unsupported, run the polyfill
+        if (!rp.support()) {
+            // run once at least
+            rp.poly()
+
+            // rerun poly on an interval until onload
+            var run = w.setInterval(rp.poly, 500)
+            if (w.addEventListener) {
+                w.addEventListener('load', function () {
+                    rp.poly()
+                    w.clearInterval(run)
+                })
+            } else if (w.attachEvent) {
+                w.attachEvent('onload', function () {
+                    rp.poly()
+                    w.clearInterval(run)
+                })
+            }
+        }
+
+        // commonjs
+        if (typeof exports !== 'undefined') {
+            exports.loadCSS = loadCSS
+        } else {
+            w.loadCSS = loadCSS
+        }
+    })(typeof global !== 'undefined' ? global : this)
+</script>
+
+    <style type="text/css">
+    @font-face {
+        font-family: 'Oswald-Regular';
+        src: url("/font/Oswald-Regular.ttf");
+    }
+
+    body {
+        margin: 0;
+    }
+
+    header,
+    footer,
+    .footer-fixed-btn,
+    .sidebar,
+    .container,
+    .site-intro-meta,
+    .toc-wrapper {
+        display: none;
+    }
+
+    .site-intro {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        /* height: 50vh; */
+        overflow: hidden;
+    }
+
+    .site-intro-placeholder {
+        position: absolute;
+        z-index: -2;
+        top: 0;
+        left: 0;
+        width: calc(100% + 300px);
+        height: 100%;
+        background: repeating-linear-gradient(
+            -45deg,
+            #444 0,
+            #444 80px,
+            #333 80px,
+            #333 160px
+        );
+        background-position: center center;
+        transform: translate3d(-226px, 0, 0);
+        animation: gradient-move 2.5s ease-out 0s infinite;
+    }
+
+    @keyframes gradient-move {
+        0% {
+            transform: translate3d(-226px, 0, 0);
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+</style>
+
+    <link id="stylesheet-fancybox" rel="preload" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.36/dist/fancybox/fancybox.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link id="stylesheet-base" rel="preload" href="/css/style.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link id="stylesheet-mobile" rel="preload" href="/css/mobile.css" as="style" onload="this.onload=null;this.rel='stylesheet';this.media='screen and (max-width: 960px)'">
+    <link id="stylesheet-theme-dark" rel="preload" href="/css/dark.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" as="script">
+    <link rel="preload" href="/scripts/main.js" as="script">
+    <link rel="preload" href="/font/Oswald-Regular.ttf" as="font" crossorigin>
+    <link rel="preload" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" as="font" crossorigin>
+    <!-- algolia -->
+    <!-- 百度统计  -->
+    <!-- 谷歌统计  -->
+    <!-- Google tag (gtag.js) -->
+<meta name="generator" content="Hexo 7.3.0"><link href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.css" rel="stylesheet" /></head>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script type="text/javascript">
+        if (typeof window.$ == undefined) {
+            console.warn('jquery load from jsdelivr failed, will load local script')
+            document.write('<script src="/lib/jquery.min.js" />')
+        }
+    </script>
+        <body class="post-body">
+        <!-- header -->
+        <header class="header header-mobile">
+    <!-- top read progress line -->
+    <div class="header-element">
+        <div class="read-progress"></div>
+    </div>
+    <!-- sidebar menu button -->
+    <div class="header-element">
+        <div class="header-sidebar-menu">
+            <div style="padding-left: 1px;">&#xe775;</div>
+        </div>
+    </div>
+    <!-- header actions -->
+    <div class="header-actions">
+        <!-- theme mode switch button -->
+        <span class="header-theme-btn header-element">
+            <i class="fas fa-adjust"></i>
+        </span>
+        <!-- back to home page text -->
+        <span class="home-link header-element">
+            <a href="/">BiribiriBird's Gallery.</a>
+        </span>
+    </div>
+    <!-- toggle banner -->
+    <div class="banner">
+        <div class="blog-title header-element">
+            <a href="/">BiribiriBird&#39;s Gallery.</a>
+        </div>
+        <div class="post-title header-element">
+            <a href="#" class="post-name">李宏毅机器学习L7 · Self-Supervised Learning</a>
+        </div>
+    </div>
+</header>
+
+        <!-- fixed footer -->
+        <footer class="footer-fixed">
+    <!-- donate button -->
+
+    <!-- back to top button -->
+    <div class="footer-fixed-btn footer-fixed-btn--hidden back-top">
+        <div>&#xe639;</div>
+    </div>
+</footer>
+
+        <!-- wrapper -->
+        <div class="wrapper">
+            <div class="site-intro" style="    height:50vh;
+">
+    <!-- 主页  -->
+    <!-- 404页  -->
+    <div class="site-intro-placeholder"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
+    <div class="site-intro-meta">
+        <!-- 标题  -->
+        <h1 class="intro-title">
+            <!-- 主页  -->
+                李宏毅机器学习L7 · Self-Supervised Learning
+            <!-- 404 -->
+        </h1>
+        <!-- 副标题 -->
+        <p class="intro-subtitle">
+            <!-- 主页副标题  -->
+            <!-- 404 -->
+        </p>
+        <!-- 文章页 meta -->
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                    <div class="post-intro-tags" >
+        <a class="post-tag" href="javascript:void(0);" data-tags="深度学习">深度学习</a>
+        <a class="post-tag" href="javascript:void(0);" data-tags="李宏毅">李宏毅</a>
+</div>
+
+                <!-- 文章字数统计 -->
+                    <div class="post-intro-read">
+                        <span>字数统计: <span class="post-count word-count">1.4k</span>阅读时长: <span class="post-count reading-time">5 min</span></span>
+                    </div>
+                <div class="post-intro-meta">
+                    <!-- 撰写日期 -->
+                    <span class="iconfont-archer post-intro-calander">&#xe676;</span>
+                    <span class="post-intro-time">2024/09/02</span>
+                    <!-- busuanzi -->
+                        <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                            <span class="iconfont-archer post-intro-busuanzi">&#xe602;</span>
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    <!-- 文章分享 -->
+                    <span class="share-wrapper">
+                        <span class="iconfont-archer share-icon">&#xe71d;</span>
+                        <span class="share-text">Share</span>
+                        <ul class="share-list">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+    </div>
+</div>
+
+            <script>
+  // get user agent
+  function getBrowserVersions() {
+    var u = window.navigator.userAgent
+    return {
+      userAgent: u,
+      trident: u.indexOf('Trident') > -1, //IE内核
+      presto: u.indexOf('Presto') > -1, //opera内核
+      webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+      gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+      mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+      ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+      android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+      iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
+      iPad: u.indexOf('iPad') > -1, //是否为iPad
+      webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
+      weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
+      uc: u.indexOf('UCBrowser') > -1, //是否为android下的UC浏览器
+    }
+  }
+  var browser = {
+    versions: getBrowserVersions(),
+  }
+  console.log('userAgent: ' + browser.versions.userAgent)
+
+  // callback
+  function fontLoaded() {
+    console.log('font loaded')
+    if (document.getElementsByClassName('site-intro-meta')) {
+      document
+        .getElementsByClassName('intro-title')[0]
+        .classList.add('intro-fade-in')
+      document
+        .getElementsByClassName('intro-subtitle')[0]
+        .classList.add('intro-fade-in')
+      var postIntros = document.getElementsByClassName('post-intros')[0]
+      if (postIntros) {
+        postIntros.classList.add('post-fade-in')
+      }
+    }
+  }
+
+  // UC不支持跨域，所以直接显示
+  function asyncCb() {
+    if (browser.versions.uc) {
+      console.log('UCBrowser')
+      fontLoaded()
+    } else {
+      WebFont.load({
+        custom: {
+          families: ['Oswald-Regular'],
+        },
+        loading: function () {
+          // 所有字体开始加载
+          // console.log('font loading');
+        },
+        active: function () {
+          // 所有字体已渲染
+          fontLoaded()
+        },
+        inactive: function () {
+          // 字体预加载失败，无效字体或浏览器不支持加载
+          console.log('inactive: timeout')
+          fontLoaded()
+        },
+        timeout: 5000, // Set the timeout to two seconds
+      })
+    }
+  }
+
+  function asyncErr() {
+    console.warn('script load from CDN failed, will load local script')
+  }
+
+  // load webfont-loader async, and add callback function
+  function async(u, cb, err) {
+    var d = document,
+      t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0]
+    o.src = u
+    if (cb) {
+      o.addEventListener(
+        'load',
+        function (e) {
+          cb(null, e)
+        },
+        false
+      )
+    }
+    if (err) {
+      o.addEventListener(
+        'error',
+        function (e) {
+          err(null, e)
+        },
+        false
+      )
+    }
+    s.parentNode.insertBefore(o, s)
+  }
+
+  var asyncLoadWithFallBack = function (arr, success, reject) {
+    var currReject = function () {
+      reject()
+      arr.shift()
+      if (arr.length) async(arr[0], success, currReject)
+    }
+
+    async(arr[0], success, currReject)
+  }
+
+  asyncLoadWithFallBack(
+    [
+      'https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js',
+      'https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js',
+      "/lib/webfontloader.min.js",
+    ],
+    asyncCb,
+    asyncErr
+  )
+</script>
+
+            <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" alt="loading">
+            <div class="container container-unloaded">
+                <main class="main post-page">
+    <article class="article-entry">
+        <h1><span id="l7-self-supervised-learning">L7. Self-Supervised Learning</span></h1>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://speech.ee.ntu.edu.tw/~hylee/ml/2022-spring.php">ML 2022 Spring (ntu.edu.tw)</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1VN4y1P7Zj">https://www.bilibili.com/video/BV1VN4y1P7Zj</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/chh13502/article/details/121210730">【《2021机器学习-李宏毅》学习笔记】_李宏毅机器学习2021github-CSDN博客</a></p>
+</blockquote>
+<!-- toc -->
+<ul>
+<li><a href="#bert">BERT</a>
+<ul>
+<li><a href="#masking-input">Masking Input</a></li>
+<li><a href="#next-sentence-prediction">Next Sentence Prediction</a></li>
+<li><a href="#downstream-tasks">Downstream Tasks</a>
+<ul>
+<li><a href="#sequence-to-class">Sequence-to-class</a></li>
+<li><a href="#pos-tagging">POS tagging</a></li>
+<li><a href="#two-sequence-to-class">two-sequence-to-class</a></li>
+<li><a href="#qa">QA</a></li>
+<li><a href="#seq2seq">Seq2Seq</a></li>
+</ul>
+</li>
+<li><a href="#why-does-bert-work">Why does BERT work?</a></li>
+<li><a href="#multi-lingual-bert">Multi-lingual BERT</a></li>
+</ul>
+</li>
+<li><a href="#gpt">GPT</a></li>
+</ul>
+<!-- tocstop -->
+<p>自监督学习本质上是一种无监督学习</p>
+<p>它将原数据集进行切分得到<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mo mathvariant="normal" lspace="0em" rspace="0em">′</mo></msup><mo separator="true">,</mo><msup><mi>x</mi><mrow><mo mathvariant="normal">′</mo><mo mathvariant="normal">′</mo></mrow></msup></mrow><annotation encoding="application/x-tex">x&#x27;,x&#x27;&#x27;</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.946332em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathdefault">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.751892em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.751892em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span><span class="mord mtight">′</span></span></span></span></span></span></span></span></span></span></span></span></p>
+<p>希望模型通过<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mo mathvariant="normal" lspace="0em" rspace="0em">′</mo></msup></mrow><annotation encoding="application/x-tex">x&#x27;</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.751892em;vertical-align:0em;"></span><span class="mord"><span class="mord mathdefault">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.751892em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span></span></span></span>输出<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi></mrow><annotation encoding="application/x-tex">y</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span></span></span></span>并且尽可能接近<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mrow><mo mathvariant="normal">′</mo><mo mathvariant="normal">′</mo></mrow></msup></mrow><annotation encoding="application/x-tex">x&#x27;&#x27;</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.751892em;vertical-align:0em;"></span><span class="mord"><span class="mord mathdefault">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.751892em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span><span class="mord mtight">′</span></span></span></span></span></span></span></span></span></span></span></span></p>
+<p><img src="/pic/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20240903133442427.png" alt="image-20240903133442427"></p>
+<h2><span id="bert">BERT</span></h2>
+<h3><span id="masking-input">Masking Input</span></h3>
+<p>Bert的自监督学习对于输入序列进行mask</p>
+<p><strong>随机</strong>选择若干个token<strong>随机</strong>进行如下一种操作</p>
+<ul>
+<li>替换成特殊的token：<code>&lt;MASK&gt;</code></li>
+<li>替换成词表中的其他token</li>
+</ul>
+<p><img src="/pic/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20240903134336771.png" alt="image-20240903134336771"></p>
+<p>通过BERT以及输出层之后，通过交叉熵计算损失函数</p>
+<p>本质上是一个分类训练</p>
+<h3><span id="next-sentence-prediction">Next Sentence Prediction</span></h3>
+<p><img src="/pic/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20240903135148552.png" alt="image-20240903135148552"></p>
+<ul>
+<li>选择两个句子，用<code>&lt;SEP&gt;</code>拼在一起</li>
+<li>开头加上<code>&lt;CLS&gt;</code>（分类）</li>
+</ul>
+<p>喂入BERT中，只取<code>&lt;CLS&gt;</code>的输出层结果，判断句子1和句子2是否是连在一起的</p>
+<blockquote>
+<p>但是后续证明这个训练意义不大</p>
+<p>抽取两个句子本身连在一起的可能性就不大，预测结果并不是很难</p>
+<ul>
+<li>SOP（Sentence order prediction Used in ALBERT）
+<ul>
+<li>抽取两个贴在一起的句子1和句子2</li>
+<li>调换顺序进行拼接</li>
+<li>让BERT预测是否调换顺序</li>
+</ul>
+</li>
+</ul>
+<p>这个效果更好</p>
+</blockquote>
+<h3><span id="downstream-tasks">Downstream Tasks</span></h3>
+<p>被训练好的BERT，目前只学会如何做填空题</p>
+<p>因此我们可以通过<strong>微调</strong>去适应不同的下游任务</p>
+<p>常用GLUE（General Language Understanding Evaluation）的九个任务及其指标进行评判</p>
+<p><img src="/pic/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20240903141149162.png" alt="image-20240903141149162"></p>
+<blockquote>
+<p>进行评判时，单独看正确率其实没什么好看的</p>
+<p>常常会参考人类的准确率（作为1）</p>
+</blockquote>
+<p>注意，在下游任务的训练中，使用的是<strong>带标注的数据</strong></p>
+<p>总体来看，我们用大量无标注数据对BERT进行训练，少量有标注的数据训练输出层</p>
+<p>因此本质上是半监督学习</p>
+<h4><span id="sequence-to-class">Sequence-to-class</span></h4>
+<p><img src="/pic/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20240903142413117.png" alt="image-20240903142413117"></p>
+<p>我们需要对文本序列进行分类，例如：<strong>情感分类</strong></p>
+<ul>
+<li>序列开头带一个<code>&lt;CLS&gt;</code></li>
+<li>微调Linear层，只看CLS的输出类别</li>
+</ul>
+<p>注意，保持BERT，只对Linear进行随机初始化</p>
+<h4><span id="pos-tagging">POS tagging</span></h4>
+<p>对于词性标注这一类<strong>输入长度等于输出长度</strong>的任务</p>
+<p><img src="/pic/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20240903143813713.png" alt="image-20240903143813713"></p>
+<p>同样需要添加<code>&lt;CLS&gt;</code>，只保留原本token对应的输出层</p>
+<h4><span id="two-sequence-to-class">two-sequence-to-class</span></h4>
+<p>由两个序列得到一个分类类别，例如：</p>
+<ul>
+<li>给定前提、假设，判断是否能够从前提推出假设</li>
+<li>给定文章、评论，判断评论是赞成文章意见还是反对文章意见</li>
+</ul>
+<p><img src="/pic/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20240903145436342.png" alt="image-20240903145436342"></p>
+<p>差别不大</p>
+<h4><span id="qa">QA</span></h4>
+<p>给定一个文档，对文档进行一个询问，让模型输出回答</p>
+<p><strong>假设问题的答案一定会出现在文档之中</strong></p>
+<p>长期以来会将文档和询问喂入，让模型输出两个整数<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mo separator="true">,</mo><mi>e</mi></mrow><annotation encoding="application/x-tex">s,e</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">s</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault">e</span></span></span></span></p>
+<p>那么文档的第<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi></mrow><annotation encoding="application/x-tex">s</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">s</span></span></span></span>个token到第<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>e</mi></mrow><annotation encoding="application/x-tex">e</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">e</span></span></span></span>个token之间句子即为答案</p>
+<p>对于BERT，我们引入两个向量</p>
+<p>分别对文档对应输出进行内积</p>
+<p>softmax之后取出最大的位置下标</p>
+<p>作为<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mo separator="true">,</mo><mi>e</mi></mrow><annotation encoding="application/x-tex">s,e</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">s</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault">e</span></span></span></span>的值</p>
+<p><img src="/pic/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20240903150213915.png" alt="image-20240903150213915"></p>
+<h4><span id="seq2seq">Seq2Seq</span></h4>
+<p>BERT本身是Transformer的Encoder</p>
+<p>如果我们希望预训练一个Encoder-Decoder</p>
+<p>我们可以对Encoder的输入进行干扰</p>
+<p>让Decoder输出重建后的输入</p>
+<p><img src="/pic/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20240903151042272.png" alt="image-20240903151042272"></p>
+<p>如何添加干扰？</p>
+<p>我们可以对输入序列进行屏蔽、删除、翻转顺序……</p>
+<p><img src="/pic/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20240903151221058.png" alt="image-20240903151221058"></p>
+<h3><span id="why-does-bert-work">Why does BERT work?</span></h3>
+<p>首先BERT接受的都是Embedding后的向量</p>
+<p>意思相近的向量接近，并且会结合上下文</p>
+<p><img src="/pic/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20240903152807172.png" alt="image-20240903152807172"></p>
+<p>那么BERT做的事情：</p>
+<ul>
+<li>遮蔽掉一个token</li>
+<li>通过上下文去理解这个token</li>
+</ul>
+<blockquote>
+<p>John Rupert Firth: “You shall know a word by the company it keeps”</p>
+<p>一个词的含义完全可以通过上下文去概括</p>
+</blockquote>
+<p>那么本质上BERT在W2处的输出代表了该词的含义，因此BERT在填空的过程中学会了每个token的含义</p>
+<p><img src="/pic/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20240903153037852.png" alt="image-20240903153037852"></p>
+<blockquote>
+<p>但喂入毫无语义的序列BERT 也能做的不错</p>
+<p>例如DNA序列ATGC，似乎BERT能理解到更深层次的内容，而不只是token</p>
+</blockquote>
+<h3><span id="multi-lingual-bert">Multi-lingual BERT</span></h3>
+<blockquote>
+<p>Train BERT by many different languages.</p>
+</blockquote>
+<p>BERT如果学会多种语言的填空题之后</p>
+<p>我们使用单一语言（例如英语）进行问答训练</p>
+<p>其自动能学会其他语言（例如中文）的相关问答</p>
+<blockquote>
+<p>不同语言差异不大</p>
+<p>相同含义单词的嵌入向量接近</p>
+</blockquote>
+<p>同时数据量非常关键，基于大量数据和足够的算力，才能达到上述结果</p>
+<hr>
+<p>但是如果多种语言差异不大的情况下，会出现语言混杂的情况</p>
+<p>但实际上并没有出现</p>
+<p>因此BERT显然学习到了语种的特征</p>
+<p>我们取大量中文、英文的向量sample，对向量进行平均，然后相减</p>
+<p>那么我们自然应该得到的是中文和英文的差距</p>
+<p><img src="/pic/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20240903163040171.png" alt="image-20240903163040171"></p>
+<p>我们喂入一句英文，得到的向量加上中英文差距的距离向量</p>
+<p>经过Decoder重建之后，发现完成了翻译</p>
+<h2><span id="gpt">GPT</span></h2>
+<p>GPT系列做的自监督是<strong>Predict Next Token</strong></p>
+<p>不断预测下一个token，并且输出作为下一次的输入</p>
+<p>进行自回归</p>
+<blockquote>
+<p>BERT：Encoder</p>
+<p>GPT：Decoder</p>
+</blockquote>
+<p>但是GPT的模型非常大，因此效果好</p>
+<p>但是GPT非常大，微调会比较贵</p>
+<p>因此并不会像BERT一样做一些任务时重新训练一个分类</p>
+<p>而是对问题进行加工，进行<code>Few-shot Learning</code></p>
+<p><img src="/pic/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20240903164347156.png" alt="image-20240903164347156"></p>
+<p>然后直接使用GPT继续进行预测，补全完后续的问题</p>
+<p>并且不需要<strong>梯度下降</strong></p>
+<p>也可以使用<code>one-shot</code></p>
+<p><img src="/pic/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20240903164507691.png" alt="image-20240903164507691"></p>
+<p>GPT足够强的话就可以使用<code>zero-shot</code></p>
+<p><img src="/pic/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/image-20240903164527083.png" alt="image-20240903164527083"></p>
+
+    </article>
+    <!-- license -->
+        <div class="license-wrapper">
+            <p>原文作者：<a href="https://aoijays.top">BiribiriBird</a>
+            <p>原文链接：<a href="https://aoijays.top/2024/09/02/Lee-ML-L7/">https://aoijays.top/2024/09/02/Lee-ML-L7/</a>
+            <p>发表日期：<a href="https://aoijays.top/2024/09/02/Lee-ML-L7/">September 2nd 2024, 11:57:19 pm</a>
+            <p>更新日期：<a href="https://aoijays.top/2024/09/02/Lee-ML-L7/">September 3rd 2024, 5:00:27 pm</a>
+            <p>版权声明：本文采用<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
+        </div>
+    <!-- paginator -->
+    <ul class="post-paginator">
+        <li class="next">
+        </li>
+        <li class="previous">
+                <div class="prevSlogan">Previous Post</div>
+                <a href="/2024/08/30/Lee-ML-L6/" title="李宏毅机器学习L6 · Generative Adversarial Network">
+                    <div class="prevTitle">李宏毅机器学习L6 · Generative Adversarial Network</div>
+                </a>
+        </li>
+    </ul>
+    <!-- comment -->
+        <div class="post-comment">
+            <!-- 来必力 City 版安装代码 -->
+
+            
+            
+            
+            <!-- utteranc评论 -->
+
+            <!-- partial('_partial/comment/changyan') -->
+            <!--PC版-->
+
+            
+            
+            
+        </div>
+    <!-- timeliness note -->
+    <!-- idea from: https://hexo.fluid-dev.com/posts/hexo-injector/#%E6%96%87%E7%AB%A0%E6%97%B6%E6%95%88%E6%80%A7%E6%8F%90%E7%A4%BA -->
+    <!-- Mathjax -->
+</main>
+
+                <!-- profile -->
+            </div>
+            <footer class="footer footer-unloaded">
+    <!-- social  -->
+        <div class="social">
+                            <a href="mailto:954436671@qq.com" class="iconfont-archer email" title="email" ></a>
+                <a href="//github.com/aoijays" class="iconfont-archer github" target="_blank" title="github"></a>
+                <a href="https://www.zhihu.com/people/Chirs2002" class="iconfont-archer zhihu" target="_blank" title="zhihu"></a>
+                <a href="https://www.instagram.com/biribiribird/" class="iconfont-archer instagram" target="_blank" title="instagram"></a>
+                <a href="https://space.bilibili.com/498088093" class="iconfont-archer bilibili" target="_blank" title="bilibili"></a>
+
+        </div>
+    <!-- powered by Hexo  -->
+    <div class="copyright">
+        <span id="hexo-power">Powered by <a href="https://hexo.io/" target="_blank">Hexo</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
+    </div>
+    <!-- website approve for Chinese user -->
+    <!-- 不蒜子  -->
+        <div class="busuanzi-container">
+                <span id="busuanzi_container_site_pv">PV: <span id="busuanzi_value_site_pv"></span> :)</span>
+        </div>
+</footer>
+
+        </div>
+        <!-- toc -->
+            <div class="toc-wrapper toc-wrapper-loding" style=    top:50vh;
+>
+                <div class="toc-catalog">
+                    <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+                </div>
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">L7. Self-Supervised Learning</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.1.</span> <span class="toc-text">BERT</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">1.1.1.</span> <span class="toc-text">Masking Input</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">1.1.2.</span> <span class="toc-text">Next Sentence Prediction</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">1.1.3.</span> <span class="toc-text">Downstream Tasks</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">1.1.3.1.</span> <span class="toc-text">Sequence-to-class</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">1.1.3.2.</span> <span class="toc-text">POS tagging</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">1.1.3.3.</span> <span class="toc-text">two-sequence-to-class</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">1.1.3.4.</span> <span class="toc-text">QA</span></a></li><li class="toc-item toc-level-4"><a class="toc-link"><span class="toc-number">1.1.3.5.</span> <span class="toc-text">Seq2Seq</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">1.1.4.</span> <span class="toc-text">Why does BERT work?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">1.1.5.</span> <span class="toc-text">Multi-lingual BERT</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.2.</span> <span class="toc-text">GPT</span></a></li></ol></li></ol>
+            </div>
+        <!-- sidebar -->
+        <div class="sidebar sidebar-hide">
+    <ul class="sidebar-tabs sidebar-tabs-active-0">
+        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
+        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
+        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
+    </ul>
+    <div class="sidebar-content sidebar-content-show-archive">
+        <div class="sidebar-panel-archives">
+    <!-- 在 ejs 中将 archive 按照时间排序 -->
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    <div class="total-and-search">
+        <div class="total-archive">
+        Total : 19
+        </div>
+        <!-- search  -->
+    </div>
+    <div class="post-archive">
+            <div class="archive-year"> 2024 </div>
+            <ul class="year-list">
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/02</span>
+            <a class="archive-post-title" href="/2024/09/02/Lee-ML-L7/">李宏毅机器学习L7 · Self-Supervised Learning</a>
+        </li>
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/30</span>
+            <a class="archive-post-title" href="/2024/08/30/Lee-ML-L6/">李宏毅机器学习L6 · Generative Adversarial Network</a>
+        </li>
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/26</span>
+            <a class="archive-post-title" href="/2024/08/26/D2l-part5-1/">动手学深度学习 · Part5 Transformer</a>
+        </li>
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/20</span>
+            <a class="archive-post-title" href="/2024/08/20/D2l-part4-2/">动手学深度学习 · Part4 现代序列模型与机器翻译实践</a>
+        </li>
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/15</span>
+            <a class="archive-post-title" href="/2024/08/15/D2l-part4-1/">动手学深度学习 · Part4 序列模型 · 初步</a>
+        </li>
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/12</span>
+            <a class="archive-post-title" href="/2024/08/12/Lee-ML-L5/">李宏毅机器学习L5 · Sequence to Sequence</a>
+        </li>
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/11</span>
+            <a class="archive-post-title" href="/2024/08/11/Lee-ML-L4/">李宏毅机器学习L4 · Sequence as input</a>
+        </li>
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/11</span>
+            <a class="archive-post-title" href="/2024/08/11/langchain-zero/">Langchain入门笔记</a>
+        </li>
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/05</span>
+            <a class="archive-post-title" href="/2024/08/05/D2l-Part3-ssd/">动手学深度学习 · Part3 SSD代码实现</a>
+        </li>
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/04</span>
+            <a class="archive-post-title" href="/2024/08/04/D2l-Part3/">动手学深度学习 · Part3 计算机视觉</a>
+        </li>
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/28</span>
+            <a class="archive-post-title" href="/2024/07/28/D2l-Part2/">动手学深度学习 · Part2 卷积神经网络</a>
+        </li>
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/27</span>
+            <a class="archive-post-title" href="/2024/07/27/Lee-ML-L3/">李宏毅机器学习L3 · Image as input</a>
+        </li>
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/25</span>
+            <a class="archive-post-title" href="/2024/07/25/Lee-ML-L2/">李宏毅机器学习L2 · What to do if my network fails to train</a>
+        </li>
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/23</span>
+            <a class="archive-post-title" href="/2024/07/23/D2l-Part1/">动手学深度学习 · Part1 深度学习基础</a>
+        </li>
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/21</span>
+            <a class="archive-post-title" href="/2024/07/21/Pytorch-intro/">Pytorch小土堆 - 笔记</a>
+        </li>
+        <li class="archive-post-item">
+            <span class="archive-post-date">06/13</span>
+            <a class="archive-post-title" href="/2024/06/13/MLP-Handwrite-2024-6/">手推神经网络</a>
+        </li>
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/26</span>
+            <a class="archive-post-title" href="/2024/05/26/cuda-zero-2024-5/">CUDA编程0基础入门笔记</a>
+        </li>
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/01</span>
+            <a class="archive-post-title" href="/2024/05/01/CS231A/">CS231A - 计算机视觉课堂笔记</a>
+        </li>
+        <li class="archive-post-item">
+            <span class="archive-post-date">01/06</span>
+            <a class="archive-post-title" href="/2024/01/06/hello-world/">Hello World</a>
+        </li>
+            </ul>
+    </div>
+</div>
+
+        <div class="sidebar-panel-tags">
+    <div class="sidebar-tags-name">
+            <span class="sidebar-tag-name" data-tags="动手学深度学习">
+                <span class="iconfont-archer">&#xe606;</span>
+                动手学深度学习
+            </span>
+            <span class="sidebar-tag-name" data-tags="深度学习">
+                <span class="iconfont-archer">&#xe606;</span>
+                深度学习
+            </span>
+            <span class="sidebar-tag-name" data-tags="CV">
+                <span class="iconfont-archer">&#xe606;</span>
+                CV
+            </span>
+            <span class="sidebar-tag-name" data-tags="李宏毅">
+                <span class="iconfont-archer">&#xe606;</span>
+                李宏毅
+            </span>
+            <span class="sidebar-tag-name" data-tags="cuda">
+                <span class="iconfont-archer">&#xe606;</span>
+                cuda
+            </span>
+            <span class="sidebar-tag-name" data-tags="Pytorch">
+                <span class="iconfont-archer">&#xe606;</span>
+                Pytorch
+            </span>
+            <span class="sidebar-tag-name" data-tags="langchain">
+                <span class="iconfont-archer">&#xe606;</span>
+                langchain
+            </span>
+    </div>
+    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
+    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
+        缺失模块，请参考主题文档进行安装配置：https://github.com/fi3ework/hexo-theme-archer#%E5%AE%89%E8%A3%85%E4%B8%BB%E9%A2%98
+    </div> 
+    <div class="sidebar-tags-list"></div>
+</div>
+
+        <div class="sidebar-panel-categories">
+    <div class="sidebar-categories-name">
+    </div>
+    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
+    <div class="sidebar-categories-list"></div>
+</div>
+
+    </div>
+</div>
+
+        <!-- site-meta -->
+        <script>
+    var siteMetaRoot = "/"
+    if (siteMetaRoot === "undefined") {
+        siteMetaRoot = '/'
+    }
+    var siteMeta = {
+        url: "https://aoijays.top",
+        root: siteMetaRoot,
+        author: "BiribiriBird"
+    }
+</script>
+
+        <!-- import experimental options here -->
+        <!-- Custom Font -->
+
+        <!-- main func -->
+        <script src="/scripts/main.js"></script>
+        <!-- fancybox -->
+        <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.36/dist/fancybox/fancybox.umd.js" onload="window.Fancybox.bind('[data-fancybox]')" defer></script>
+        <!-- algolia -->
+        <!-- busuanzi -->
+            <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+        <!-- async load share.js -->
+            <script src="/scripts/share.js" async></script>
+        <!-- mermaid -->
+    </body>
+</html>
